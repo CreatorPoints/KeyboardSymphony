@@ -1,140 +1,167 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const mainContainer = document.getElementById('gravity-container');
+    const canvas = document.getElementById('background-canvas');
+    if (!canvas) return; // Ensure canvas exists on the page
 
-    // Select elements we want to float
-    // Note: We don't float the header to keep navigation usable,
-    // but we float children of main.
-    const elementsToFloat = Array.from(mainContainer.children);
+    const ctx = canvas.getContext('2d');
+    let width, height;
 
-    const physicsObjects = [];
+    function resizeCanvas() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+    }
 
-    // Initialize elements for physics
-    elementsToFloat.forEach((el, index) => {
-        el.classList.add('physics-element');
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
 
-        // Initial random spread around the center
-        const startX = window.innerWidth / 2 + (Math.random() - 0.5) * 400;
-        const startY = window.innerHeight / 2 + (Math.random() - 0.5) * 400;
-
-        const obj = {
-            el: el,
-            x: startX,
-            y: startY,
-            vx: (Math.random() - 0.5) * 2, // Initial velocity
-            vy: (Math.random() - 0.5) * 2,
-            width: el.offsetWidth,
-            height: el.offsetHeight,
-            mass: Math.random() * 0.5 + 0.5 // varied mass
-        };
-
-        // Absolutely position them
-        el.style.left = '0px';
-        el.style.top = '0px';
-
-        physicsObjects.push(obj);
-    });
-
-    // Mouse interaction variables
+    // Mouse interactivity variables
     let mouseX = -1000;
     let mouseY = -1000;
-    const repelRadius = 200;
-    const repelForce = 0.5;
+    const repelRadius = 150;
+    const repelForce = 5;
 
     window.addEventListener('mousemove', (e) => {
         mouseX = e.clientX;
         mouseY = e.clientY;
     });
 
-    // Dragging logic
-    let draggedObj = null;
-
-    physicsObjects.forEach(obj => {
-        obj.el.addEventListener('mousedown', (e) => {
-            draggedObj = obj;
-            obj.vx = 0;
-            obj.vy = 0;
-            e.preventDefault(); // prevent text selection
-        });
+    window.addEventListener('mouseout', () => {
+        mouseX = -1000;
+        mouseY = -1000;
     });
 
-    window.addEventListener('mouseup', () => {
-        if (draggedObj) {
-            // Optional: give it a little toss based on mouse movement
-            draggedObj = null;
+    // Keys requested by user
+    const keys = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'];
+    const laneCount = keys.length;
+    const laneState = new Array(laneCount).fill(0); // For lane illumination
+
+    // Particle System
+    const particles = [];
+
+    class Particle {
+        constructor(x, y, color, isAmbient = true) {
+            this.x = x;
+            this.y = y;
+            this.baseX = x;
+            this.baseY = y;
+            // Ambient particles float slowly; burst particles fly fast
+            this.vx = isAmbient ? (Math.random() - 0.5) * 1 : (Math.random() - 0.5) * 8;
+            this.vy = isAmbient ? (Math.random() - 0.5) * 1 : -(Math.random() * 5 + 3);
+            this.size = Math.random() * 3 + 1;
+            this.color = color;
+            this.alpha = isAmbient ? Math.random() * 0.5 + 0.1 : 1;
+            this.isAmbient = isAmbient;
+            this.life = 1;
+        }
+
+        update() {
+            // Apply velocity
+            this.x += this.vx;
+            this.y += this.vy;
+
+            // Mouse Repulsion logic
+            const dx = this.x - mouseX;
+            const dy = this.y - mouseY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance < repelRadius) {
+                const force = (repelRadius - distance) / repelRadius;
+                const angle = Math.atan2(dy, dx);
+
+                // Push particles away
+                this.x += Math.cos(angle) * force * repelForce;
+                this.y += Math.sin(angle) * force * repelForce;
+            }
+
+            if (this.isAmbient) {
+                // Keep ambient particles on screen (wrap around)
+                if (this.x < 0) this.x = width;
+                if (this.x > width) this.x = 0;
+                if (this.y < 0) this.y = height;
+                if (this.y > height) this.y = 0;
+            } else {
+                // Burst particles fade out and die
+                this.life -= 0.02;
+                this.alpha = this.life;
+            }
+        }
+
+        draw() {
+            ctx.save();
+            ctx.globalAlpha = this.alpha;
+            ctx.fillStyle = this.color;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        }
+    }
+
+    // Initialize ambient particles
+    for (let i = 0; i < 150; i++) {
+        const x = Math.random() * width;
+        const y = Math.random() * height;
+        const hue = Math.random() * 360;
+        particles.push(new Particle(x, y, `hsl(${hue}, 100%, 70%)`, true));
+    }
+
+    // Keyboard interactivity
+    window.addEventListener('keydown', (e) => {
+        const key = e.key.toLowerCase();
+        const index = keys.indexOf(key);
+        if (index !== -1) {
+            laneState[index] = 1; // Illuminate lane
+
+            // Spawn burst particles at the bottom of the lane
+            const laneWidth = width / laneCount;
+            const spawnX = index * laneWidth + laneWidth / 2;
+            const spawnY = height - 50;
+            const hue = (index / laneCount) * 360;
+
+            for (let i = 0; i < 10; i++) {
+                particles.push(new Particle(spawnX, spawnY, `hsl(${hue}, 100%, 50%)`, false));
+            }
         }
     });
 
-    // Physics Loop
-    function updatePhysics() {
-        physicsObjects.forEach(obj => {
-            if (obj === draggedObj) {
-                // If dragging, follow mouse directly
-                obj.x = mouseX - obj.width / 2;
-                obj.y = mouseY - obj.height / 2;
-            } else {
-                // Apply a very light "space" drift if velocity gets too low
-                if (Math.abs(obj.vx) < 0.1) obj.vx += (Math.random() - 0.5) * 0.1;
-                if (Math.abs(obj.vy) < 0.1) obj.vy += (Math.random() - 0.5) * 0.1;
+    // Animation Loop
+    function animate() {
+        // Clear canvas with trailing effect
+        ctx.fillStyle = 'rgba(10, 10, 10, 0.3)';
+        ctx.fillRect(0, 0, width, height);
 
-                // --- Mouse Repulsion (Anti-gravity effect) ---
-                const centerX = obj.x + obj.width / 2;
-                const centerY = obj.y + obj.height / 2;
-                const dx = centerX - mouseX;
-                const dy = centerY - mouseY;
-                const distance = Math.sqrt(dx * dx + dy * dy);
+        const laneWidth = width / laneCount;
 
-                if (distance < repelRadius) {
-                    // Push away from mouse
-                    const force = (repelRadius - distance) / repelRadius; // 0 to 1
-                    const angle = Math.atan2(dy, dx);
+        // Draw Lanes (Keyboard Reactivity)
+        for (let i = 0; i < laneCount; i++) {
+            laneState[i] *= 0.9; // Fade out
 
-                    obj.vx += Math.cos(angle) * force * repelForce / obj.mass;
-                    obj.vy += Math.sin(angle) * force * repelForce / obj.mass;
-                }
-
-                // Apply velocity with some friction
-                obj.x += obj.vx;
-                obj.y += obj.vy;
-
-                obj.vx *= 0.99; // Air resistance / friction
-                obj.vy *= 0.99;
-
-                // --- Screen Boundaries (Bouncing) ---
-                // Left/Right
-                if (obj.x <= 0) {
-                    obj.x = 0;
-                    obj.vx *= -0.8; // Bounce with some energy loss
-                } else if (obj.x + obj.width >= window.innerWidth) {
-                    obj.x = window.innerWidth - obj.width;
-                    obj.vx *= -0.8;
-                }
-
-                // Top/Bottom
-                if (obj.y <= 0) {
-                    obj.y = 0;
-                    obj.vy *= -0.8;
-                } else if (obj.y + obj.height >= window.innerHeight) {
-                    obj.y = window.innerHeight - obj.height;
-                    obj.vy *= -0.8;
-                }
+            if (laneState[i] > 0.01) {
+                const hue = (i / laneCount) * 360;
+                ctx.fillStyle = `hsla(${hue}, 100%, 50%, ${laneState[i] * 0.2})`;
+                ctx.fillRect(i * laneWidth, 0, laneWidth, height);
             }
 
-            // Update DOM element position
-            obj.el.style.transform = `translate(${obj.x}px, ${obj.y}px)`;
-        });
+            // Subtle lane separators
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
+            ctx.beginPath();
+            ctx.moveTo(i * laneWidth, 0);
+            ctx.lineTo(i * laneWidth, height);
+            ctx.stroke();
+        }
 
-        requestAnimationFrame(updatePhysics);
+        // Update and draw particles
+        for (let i = particles.length - 1; i >= 0; i--) {
+            const p = particles[i];
+            p.update();
+            p.draw();
+
+            if (!p.isAmbient && p.life <= 0) {
+                particles.splice(i, 1);
+            }
+        }
+
+        requestAnimationFrame(animate);
     }
 
-    // Handle window resize
-    window.addEventListener('resize', () => {
-        physicsObjects.forEach(obj => {
-            // Keep objects inside bounds on resize
-            if (obj.x + obj.width > window.innerWidth) obj.x = window.innerWidth - obj.width;
-            if (obj.y + obj.height > window.innerHeight) obj.y = window.innerHeight - obj.height;
-        });
-    });
-
-    // Start loop
-    updatePhysics();
+    animate();
 });
