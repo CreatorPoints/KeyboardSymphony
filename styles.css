@@ -8,18 +8,9 @@
 body {
     background-color: #0a0a0a;
     color: #fff;
-    overflow-x: hidden;
-    min-height: 100vh;
-}
-
-#background-canvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    pointer-events: none;
+    overflow: hidden; /* Important for the antigravity effect */
+    width: 100vw;
+    height: 100vh;
 }
 
 header {
@@ -30,8 +21,10 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    position: sticky;
+    position: absolute;
     top: 0;
+    left: 0;
+    width: 100%;
     z-index: 100;
 }
 
@@ -49,6 +42,7 @@ nav {
 }
 
 .tab-btn {
+    text-decoration: none;
     background: transparent;
     border: none;
     color: #ccc;
@@ -73,83 +67,59 @@ nav {
 }
 
 main {
-    max-width: 800px;
-    margin: 4rem auto;
-    padding: 2rem;
-    background: rgba(20, 20, 20, 0.7);
-    border-radius: 10px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* Let mouse interact with child elements directly */
+}
+
+/* Physics objects */
+.physics-element {
+    position: absolute;
+    pointer-events: auto; /* Re-enable pointer events for physics elements */
+    padding: 1rem;
+    background: rgba(20, 20, 20, 0.8);
     border: 1px solid #333;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(5px);
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    user-select: none;
+    cursor: grab;
 }
 
-.tab-content {
-    display: none;
-    animation: fadeIn 0.5s ease;
+.physics-element:active {
+    cursor: grabbing;
 }
 
-.tab-content.active {
-    display: block;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-h1 {
-    margin-bottom: 1rem;
+h1.physics-element {
     color: #00ffff;
     text-shadow: 0 0 5px #00ffff;
+    font-size: 2rem;
 }
 
-p {
-    line-height: 1.6;
-    margin-bottom: 1rem;
+p.physics-element {
     color: #ddd;
+    line-height: 1.6;
 }
 
-ul {
-    list-style-position: inside;
-    margin-bottom: 1rem;
+.level-item.physics-element, .doc-link.physics-element, .community-link.physics-element {
     color: #ccc;
+    display: inline-block;
 }
 
-li {
-    margin-bottom: 0.5rem;
-}
-
-a {
+.community-link.physics-element, .doc-link.physics-element a {
     color: #ff00ff;
     text-decoration: none;
-    transition: text-shadow 0.3s ease;
 }
 
-a:hover {
-    text-shadow: 0 0 8px #ff00ff;
-}
-
-.community-links {
-    display: flex;
-    gap: 1rem;
-}
-
-.download-btn {
-    display: inline-block;
+.download-btn.physics-element {
     background: #00ffff;
     color: #000;
-    border: none;
-    padding: 0.8rem 1.5rem;
-    margin-right: 1rem;
-    border-radius: 5px;
     font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s ease;
     text-transform: uppercase;
-}
-
-.download-btn:hover {
-    background: #fff;
-    box-shadow: 0 0 15px #00ffff;
-    transform: translateY(-2px);
+    border: none;
+    cursor: pointer;
 }

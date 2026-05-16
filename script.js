@@ -1,137 +1,140 @@
-// Tab Switching Logic
-const tabBtns = document.querySelectorAll('.tab-btn');
-const tabContents = document.querySelectorAll('.tab-content');
+document.addEventListener('DOMContentLoaded', () => {
+    const mainContainer = document.getElementById('gravity-container');
 
-tabBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-        // Remove active class from all buttons and contents
-        tabBtns.forEach(b => b.classList.remove('active'));
-        tabContents.forEach(c => c.classList.remove('active'));
+    // Select elements we want to float
+    // Note: We don't float the header to keep navigation usable,
+    // but we float children of main.
+    const elementsToFloat = Array.from(mainContainer.children);
 
-        // Add active class to clicked button and corresponding content
-        btn.classList.add('active');
-        const targetId = btn.getAttribute('data-target');
-        document.getElementById(targetId).classList.add('active');
+    const physicsObjects = [];
+
+    // Initialize elements for physics
+    elementsToFloat.forEach((el, index) => {
+        el.classList.add('physics-element');
+
+        // Initial random spread around the center
+        const startX = window.innerWidth / 2 + (Math.random() - 0.5) * 400;
+        const startY = window.innerHeight / 2 + (Math.random() - 0.5) * 400;
+
+        const obj = {
+            el: el,
+            x: startX,
+            y: startY,
+            vx: (Math.random() - 0.5) * 2, // Initial velocity
+            vy: (Math.random() - 0.5) * 2,
+            width: el.offsetWidth,
+            height: el.offsetHeight,
+            mass: Math.random() * 0.5 + 0.5 // varied mass
+        };
+
+        // Absolutely position them
+        el.style.left = '0px';
+        el.style.top = '0px';
+
+        physicsObjects.push(obj);
     });
+
+    // Mouse interaction variables
+    let mouseX = -1000;
+    let mouseY = -1000;
+    const repelRadius = 200;
+    const repelForce = 0.5;
+
+    window.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+    });
+
+    // Dragging logic
+    let draggedObj = null;
+
+    physicsObjects.forEach(obj => {
+        obj.el.addEventListener('mousedown', (e) => {
+            draggedObj = obj;
+            obj.vx = 0;
+            obj.vy = 0;
+            e.preventDefault(); // prevent text selection
+        });
+    });
+
+    window.addEventListener('mouseup', () => {
+        if (draggedObj) {
+            // Optional: give it a little toss based on mouse movement
+            draggedObj = null;
+        }
+    });
+
+    // Physics Loop
+    function updatePhysics() {
+        physicsObjects.forEach(obj => {
+            if (obj === draggedObj) {
+                // If dragging, follow mouse directly
+                obj.x = mouseX - obj.width / 2;
+                obj.y = mouseY - obj.height / 2;
+            } else {
+                // Apply a very light "space" drift if velocity gets too low
+                if (Math.abs(obj.vx) < 0.1) obj.vx += (Math.random() - 0.5) * 0.1;
+                if (Math.abs(obj.vy) < 0.1) obj.vy += (Math.random() - 0.5) * 0.1;
+
+                // --- Mouse Repulsion (Anti-gravity effect) ---
+                const centerX = obj.x + obj.width / 2;
+                const centerY = obj.y + obj.height / 2;
+                const dx = centerX - mouseX;
+                const dy = centerY - mouseY;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < repelRadius) {
+                    // Push away from mouse
+                    const force = (repelRadius - distance) / repelRadius; // 0 to 1
+                    const angle = Math.atan2(dy, dx);
+
+                    obj.vx += Math.cos(angle) * force * repelForce / obj.mass;
+                    obj.vy += Math.sin(angle) * force * repelForce / obj.mass;
+                }
+
+                // Apply velocity with some friction
+                obj.x += obj.vx;
+                obj.y += obj.vy;
+
+                obj.vx *= 0.99; // Air resistance / friction
+                obj.vy *= 0.99;
+
+                // --- Screen Boundaries (Bouncing) ---
+                // Left/Right
+                if (obj.x <= 0) {
+                    obj.x = 0;
+                    obj.vx *= -0.8; // Bounce with some energy loss
+                } else if (obj.x + obj.width >= window.innerWidth) {
+                    obj.x = window.innerWidth - obj.width;
+                    obj.vx *= -0.8;
+                }
+
+                // Top/Bottom
+                if (obj.y <= 0) {
+                    obj.y = 0;
+                    obj.vy *= -0.8;
+                } else if (obj.y + obj.height >= window.innerHeight) {
+                    obj.y = window.innerHeight - obj.height;
+                    obj.vy *= -0.8;
+                }
+            }
+
+            // Update DOM element position
+            obj.el.style.transform = `translate(${obj.x}px, ${obj.y}px)`;
+        });
+
+        requestAnimationFrame(updatePhysics);
+    }
+
+    // Handle window resize
+    window.addEventListener('resize', () => {
+        physicsObjects.forEach(obj => {
+            // Keep objects inside bounds on resize
+            if (obj.x + obj.width > window.innerWidth) obj.x = window.innerWidth - obj.width;
+            if (obj.y + obj.height > window.innerHeight) obj.y = window.innerHeight - obj.height;
+        });
+    });
+
+    // Start loop
+    updatePhysics();
 });
-
-// Canvas Background Logic
-const canvas = document.getElementById('background-canvas');
-const ctx = canvas.getContext('2d');
-
-let width, height;
-
-function resizeCanvas() {
-    width = canvas.width = window.innerWidth;
-    height = canvas.height = window.innerHeight;
-}
-
-window.addEventListener('resize', resizeCanvas);
-resizeCanvas();
-
-const keys = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'];
-const laneCount = keys.length;
-const laneState = new Array(laneCount).fill(0); // 0 to 1 for brightness
-const particles = [];
-
-// Particle class for visual flair
-class Particle {
-    constructor(laneIndex) {
-        const laneWidth = width / laneCount;
-        this.x = laneIndex * laneWidth + laneWidth / 2 + (Math.random() - 0.5) * laneWidth * 0.5;
-        this.y = 0; // Start at the top
-        this.speed = Math.random() * 5 + 5; // Falling speed
-        this.size = Math.random() * 3 + 2;
-        this.color = `hsl(${(laneIndex / laneCount) * 360}, 100%, 50%)`;
-        this.alpha = 1;
-    }
-
-    update() {
-        this.y += this.speed;
-        this.alpha -= 0.01; // Fade out slightly
-    }
-
-    draw() {
-        ctx.save();
-        ctx.globalAlpha = this.alpha;
-        ctx.fillStyle = this.color;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-    }
-}
-
-// Generate background falling notes/particles randomly
-function spawnAmbientParticles() {
-    if (Math.random() < 0.1) {
-        const randomLane = Math.floor(Math.random() * laneCount);
-        particles.push(new Particle(randomLane));
-    }
-}
-
-// Handle Keydown
-window.addEventListener('keydown', (e) => {
-    const key = e.key.toLowerCase();
-    const index = keys.indexOf(key);
-    if (index !== -1) {
-        laneState[index] = 1; // Max brightness
-        // Spawn burst of particles on key press
-        for(let i=0; i<5; i++) {
-            let p = new Particle(index);
-            p.y = height - 50; // Spawn near bottom
-            p.speed = -(Math.random() * 5 + 2); // Fly upwards
-            particles.push(p);
-        }
-    }
-});
-
-// Animation Loop
-function animate() {
-    // Semi-transparent black to create trailing effect
-    ctx.fillStyle = 'rgba(10, 10, 10, 0.2)';
-    ctx.fillRect(0, 0, width, height);
-
-    const laneWidth = width / laneCount;
-
-    // Draw Lanes
-    for (let i = 0; i < laneCount; i++) {
-        // Fade out lane brightness over time
-        laneState[i] *= 0.9;
-
-        if (laneState[i] > 0.01) {
-            const hue = (i / laneCount) * 360;
-            ctx.fillStyle = `hsla(${hue}, 100%, 50%, ${laneState[i] * 0.3})`;
-            ctx.fillRect(i * laneWidth, 0, laneWidth, height);
-
-            // Draw hit line at bottom
-            ctx.fillStyle = `hsla(${hue}, 100%, 50%, ${laneState[i]})`;
-            ctx.fillRect(i * laneWidth, height - 60, laneWidth, 10);
-        }
-
-        // Draw lane separators (subtle)
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
-        ctx.beginPath();
-        ctx.moveTo(i * laneWidth, 0);
-        ctx.lineTo(i * laneWidth, height);
-        ctx.stroke();
-    }
-
-    spawnAmbientParticles();
-
-    // Update and draw particles
-    for (let i = particles.length - 1; i >= 0; i--) {
-        const p = particles[i];
-        p.update();
-        p.draw();
-
-        // Remove dead particles
-        if (p.alpha <= 0 || p.y > height + 10 || p.y < -10) {
-            particles.splice(i, 1);
-        }
-    }
-
-    requestAnimationFrame(animate);
-}
-
-animate();
