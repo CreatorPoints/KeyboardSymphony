@@ -3,30 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Download - Keyboard Symphony</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Keyboard Symphony | Premium 10-Lane Rhythm Experience</title>
+    <meta name="description" content="Official homepage of Keyboard Symphony. Immerse yourself in a glowing 10-lane keyboard rhythm game, customize levels with the creator PAYG editor, and compete on global leaderboards.">
+    <!-- Google Fonts for elite styling -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <canvas id="background-canvas"></canvas>
-    <header>
-        <div class="logo">Keyboard Symphony</div>
-        <nav>
-            <a href="index.html" class="tab-btn">Home</a>
-            <a href="levels.html" class="tab-btn">Levels</a>
-            <a href="community.html" class="tab-btn">Community</a>
-            <a href="download.html" class="tab-btn active">Download</a>
-            <a href="docs.html" class="tab-btn">Docs</a>
-        </nav>
+    <!-- Reactive Backdrop Particle Canvas -->
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- Glassmorphic Global Header Navigation -->
+    <header class="header">
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="logo-icon"><rect x="2" y="3" width="20" height="18" rx="2" ry="2"></rect><line x1="6" y1="8" x2="6" y2="8"></line><line x1="10" y1="8" x2="10" y2="8"></line><line x1="14" y1="8" x2="14" y2="8"></line><line x1="18" y1="8" x2="18" y2="8"></line><line x1="6" y1="12" x2="6" y2="12"></line><line x1="10" y1="12" x2="10" y2="12"></line><line x1="14" y1="12" x2="14" y2="12"></line><line x1="18" y1="12" x2="18" y2="12"></line><line x1="7" y1="16" x2="17" y2="16"></line></svg>
+                KEYBOARD <span>SYMPHONY</span>
+            </a>
+
+            <nav class="nav-menu">
+                <a href="index.html" class="nav-link" id="nav-home">HOME</a>
+                <a href="community.html" class="nav-link" id="nav-community">COMMUNITY</a>
+                <a href="download.html" class="nav-link active" id="nav-download">DOWNLOAD</a>
+                <a href="docs.html" class="nav-link" id="nav-docs">DOCS</a>
+            </nav>
+
+            <div class="nav-actions">
+                <a href="download.html" class="btn-primary glow-cyan">PLAY NOW</a>
+                <button class="mobile-menu-toggle" id="menu-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
     </header>
 
-    <main id="gravity-container">
-        <h1>Download</h1>
-        <p>Get Keyboard Symphony on your preferred platform.</p>
-        <button class="download-btn">Windows</button>
-        <button class="download-btn">macOS</button>
-        <button class="download-btn">Linux</button>
+    <!-- Main Dynamic Content Wrapper -->
+    <main class="main-content">
+        <section id="download" class="page-section active">
+            <div class="download-container">
+                <div class="section-header">
+                    <h2 class="section-title">CHOOSE YOUR STAGE</h2>
+                    <p class="section-desc">Download the client launcher for Windows or browse the open-source repository.</p>
+                </div>
+
+                <div class="download-grid">
+                    <div class="glass-card download-card glow-cyan">
+                        <div class="platform-badge">RECOMMENDED</div>
+                        <div class="dl-icon">❖</div>
+                        <h3>Windows Client Installer</h3>
+                        <p>Fully bundled build featuring Godot 4 high-fidelity rendering, native input polling, and local session persistence. Includes automated game updates.</p>
+                        <span class="file-info">Size: 42.4 MB • Format: .msi</span>
+                        <a href="#" class="btn-primary glow-cyan btn-full margin-top-auto">DOWNLOAD FOR WINDOWS</a>
+                    </div>
+
+                    <div class="glass-card download-card glow-magenta">
+                        <div class="platform-badge zip">PORTABLE</div>
+                        <div class="dl-icon">⚡</div>
+                        <h3>Windows Standalone ZIP</h3>
+                        <p>No installer required. Simply download the compressed level editor client, extract the contents, double click the executable, and jump straight into mapping.</p>
+                        <span class="file-info">Size: 39.8 MB • Format: .zip</span>
+                        <a href="#" class="btn-primary glow-magenta btn-full margin-top-auto">DOWNLOAD STANDALONE</a>
+                    </div>
+                </div>
+
+                <!-- System Requirements & Specs -->
+                <div class="requirements-box glass-card">
+                    <h3>SYSTEM SPECIFICATIONS</h3>
+                    <div class="specs-grid">
+                        <div class="spec-col">
+                            <h4>MINIMUM REQUIREMENTS</h4>
+                            <ul>
+                                <li><strong>OS:</strong> Windows 10/11 64-bit</li>
+                                <li><strong>Processor:</strong> Dual Core 2.0 GHz</li>
+                                <li><strong>Memory:</strong> 4 GB RAM</li>
+                                <li><strong>Graphics:</strong> DX11 compatible GPU (Intel HD 500+)</li>
+                                <li><strong>Storage:</strong> 200 MB free space</li>
+                            </ul>
+                        </div>
+                        <div class="spec-col">
+                            <h4>RECOMMENDED</h4>
+                            <ul>
+                                <li><strong>OS:</strong> Windows 11 64-bit</li>
+                                <li><strong>Processor:</strong> Quad Core 3.0 GHz+</li>
+                                <li><strong>Memory:</strong> 8 GB RAM</li>
+                                <li><strong>Graphics:</strong> Dedicated GPU (GTX 1050 / RX 560)</li>
+                                <li><strong>Keyboard:</strong> N-Key Rollover (NKRO) Mechanical</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- SECTION 1: HOME PAGE -->
+
+
+        <!-- SECTION 2: COMMUNITY PAGE -->
+
+
+        <!-- SECTION 3: DOWNLOAD PAGE -->
+
+
+        <!-- SECTION 4: DOCUMENTATION PAGE -->
+
     </main>
 
-    <script src="script.js"></script>
+    <!-- Global Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <p>© 2026 Keyboard Symphony Project. Designed with Neon Cyan & Magenta.</p>
+            <div class="footer-links">
+                <a href="docs.html">GitHub Source</a>
+                <a href="docs.html">Terms of Service</a>
+                <a href="docs.html">Creator Licences</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Local App Script -->
+    <script src="app.js"></script>
 </body>
 </html>
