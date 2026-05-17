@@ -3,28 +3,343 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Keyboard Symphony</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Keyboard Symphony | Premium 10-Lane Rhythm Experience</title>
+    <meta name="description" content="Official homepage of Keyboard Symphony. Immerse yourself in a glowing 10-lane keyboard rhythm game, customize levels with the creator PAYG editor, and compete on global leaderboards.">
+    <!-- Google Fonts for elite styling -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <canvas id="background-canvas"></canvas>
-    <header>
-        <div class="logo">Keyboard Symphony</div>
-        <nav>
-            <a href="index.html" class="tab-btn active">Home</a>
-            <a href="levels.html" class="tab-btn">Levels</a>
-            <a href="community.html" class="tab-btn">Community</a>
-            <a href="download.html" class="tab-btn">Download</a>
-            <a href="docs.html" class="tab-btn">Docs</a>
-        </nav>
+    <!-- Reactive Backdrop Particle Canvas -->
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- Glassmorphic Global Header Navigation -->
+    <header class="header">
+        <div class="header-container">
+            <a href="#/home" class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="logo-icon"><rect x="2" y="3" width="20" height="18" rx="2" ry="2"></rect><line x1="6" y1="8" x2="6" y2="8"></line><line x1="10" y1="8" x2="10" y2="8"></line><line x1="14" y1="8" x2="14" y2="8"></line><line x1="18" y1="8" x2="18" y2="8"></line><line x1="6" y1="12" x2="6" y2="12"></line><line x1="10" y1="12" x2="10" y2="12"></line><line x1="14" y1="12" x2="14" y2="12"></line><line x1="18" y1="12" x2="18" y2="12"></line><line x1="7" y1="16" x2="17" y2="16"></line></svg>
+                KEYBOARD <span>SYMPHONY</span>
+            </a>
+            
+            <nav class="nav-menu">
+                <a href="#/home" class="nav-link active" id="nav-home">HOME</a>
+                <a href="#/community" class="nav-link" id="nav-community">COMMUNITY</a>
+                <a href="#/download" class="nav-link" id="nav-download">DOWNLOAD</a>
+                <a href="#/docs" class="nav-link" id="nav-docs">DOCS</a>
+            </nav>
+
+            <div class="nav-actions">
+                <a href="#/download" class="btn-primary glow-cyan">PLAY NOW</a>
+                <button class="mobile-menu-toggle" id="menu-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
     </header>
 
-    <main id="gravity-container">
-        <h1>Welcome to Keyboard Symphony</h1>
-        <p>Experience the ultimate vertically scrolling rhythm game. Press the keys Q, W, E, R, T, Y, U, I, O, P to the beat!</p>
-        <p>Move your mouse around to interact with the elements on this page!</p>
+    <!-- Main Dynamic Content Wrapper -->
+    <main class="main-content">
+        
+        <!-- SECTION 1: HOME PAGE -->
+        <section id="home" class="page-section active">
+            <div class="hero-section">
+                <div class="hero-content">
+                    <div class="badge neon-flicker">V1.0.0 STABLE OUT NOW</div>
+                    <h1 class="hero-title">PLAY YOUR KEYBOARD<br>LIKE A <span class="text-neon-cyan">SYMPHONY</span></h1>
+                    <p class="hero-subtitle">
+                        An adrenaline-fueled, <span class="text-white">10-lane rhythm experience</span> designed for mechanical keyboards. Tap, hold, and slide to the beat while crafting your own masterpieces with our overpowered level creator.
+                    </p>
+                    <div class="hero-ctas">
+                        <a href="#/download" class="btn-primary btn-large glow-magenta">GET CLIENT</a>
+                        <a href="#/docs" class="btn-secondary btn-large">LEARN CHARTING</a>
+                    </div>
+                </div>
+
+                <!-- Interactive Live Web Synth Preview -->
+                <div class="hero-visual">
+                    <div class="synth-container glass-card">
+                        <div class="synth-header">
+                            <span class="synth-dot red"></span>
+                            <span class="synth-dot yellow"></span>
+                            <span class="synth-dot green"></span>
+                            <div class="synth-title">INTERACTIVE WEB SYNTH PREVIEW</div>
+                        </div>
+                        <div class="synth-screen">
+                            <div class="screen-instructions" id="synth-status">PRESS Q-W-E-R-T-Y-U-I-O-P ON YOUR KEYBOARD TO PLAY!</div>
+                        </div>
+                        <!-- Virtual 10-Lane Keyboard Slot Display -->
+                        <div class="synth-lanes" id="keyboard-lanes">
+                            <div class="key-slot" data-key="81"><span class="key-lbl">Q</span><div class="key-glow bg-cyan"></div></div>
+                            <div class="key-slot" data-key="87"><span class="key-lbl">W</span><div class="key-glow bg-cyan"></div></div>
+                            <div class="key-slot" data-key="69"><span class="key-lbl">E</span><div class="key-glow bg-cyan"></div></div>
+                            <div class="key-slot" data-key="82"><span class="key-lbl">R</span><div class="key-glow bg-cyan"></div></div>
+                            <div class="key-slot" data-key="84"><span class="key-lbl">T</span><div class="key-glow bg-magenta"></div></div>
+                            <div class="key-slot" data-key="89"><span class="key-lbl">Y</span><div class="key-glow bg-magenta"></div></div>
+                            <div class="key-slot" data-key="85"><span class="key-lbl">U</span><div class="key-glow bg-cyan"></div></div>
+                            <div class="key-slot" data-key="73"><span class="key-lbl">I</span><div class="key-glow bg-cyan"></div></div>
+                            <div class="key-slot" data-key="79"><span class="key-lbl">O</span><div class="key-glow bg-cyan"></div></div>
+                            <div class="key-slot" data-key="80"><span class="key-lbl">P</span><div class="key-glow bg-cyan"></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Game Features Showcase Grid -->
+            <div class="features-section">
+                <div class="section-header">
+                    <h2 class="section-title">ENGINE OVERVIEW</h2>
+                    <p class="section-desc">Experience a state-of-the-art rhythm engine engineered for timing precision and visual brilliance.</p>
+                </div>
+                <div class="features-grid">
+                    <div class="glass-card feature-card glow-hover-cyan">
+                        <div class="feature-icon text-cyan">✎</div>
+                        <h3>Place As You Go Mode</h3>
+                        <p>Our overpowered editor lets you capture notes dynamically during playback. Hit the keys in real-time, auto-stretch hold notes, and craft pro-grade maps in minutes.</p>
+                    </div>
+                    <div class="glass-card feature-card glow-hover-magenta">
+                        <div class="feature-icon text-magenta">⏺</div>
+                        <h3>FFmpeg Audio Converter</h3>
+                        <p>Native integration built to transcode WAV and MP3 imports into high-fidelity OGG files. Seamless, fast, and optimized directly within the editor environment.</p>
+                    </div>
+                    <div class="glass-card feature-card glow-hover-cyan">
+                        <div class="feature-icon text-cyan">☁</div>
+                        <h3>Supabase Cloud Sync</h3>
+                        <p>Log in once, save locally, and let our persistent data managers reconcile your progression, custom maps, and profile parameters automatically with the cloud.</p>
+                    </div>
+                    <div class="glass-card feature-card glow-hover-magenta">
+                        <div class="feature-icon text-magenta">⭐</div>
+                        <h3>Up to 20-Star Ratings</h3>
+                        <p>From simple cozy melodies to hyper-dense, complex 9-minute streams, our rating system scales up to 20 stars to challenge even the absolute fastest players.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: COMMUNITY PAGE -->
+        <section id="community" class="page-section">
+            <div class="community-layout">
+                <div class="community-main">
+                    <div class="section-header">
+                        <h2 class="section-title">COMMUNITY CREATIONS</h2>
+                        <p class="section-desc">Search, download, and compete on the absolute most challenging custom charts uploaded by members.</p>
+                    </div>
+                    
+                    <div class="search-bar-container glass-card">
+                        <input type="text" id="chart-search" placeholder="Search level name, artist, or creator...">
+                        <select id="star-filter">
+                            <option value="all">All Difficulties</option>
+                            <option value="easy">Easy (1 - 5 Stars)</option>
+                            <option value="medium">Medium (6 - 12 Stars)</option>
+                            <option value="hard">Hard (13 - 18 Stars)</option>
+                            <option value="expert">Godlike (19 - 20 Stars)</option>
+                        </select>
+                    </div>
+
+                    <!-- Custom levels list -->
+                    <div class="charts-grid" id="charts-container">
+                        <!-- Filled dynamically by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="community-sidebar">
+                    <!-- Creator Leaderboard -->
+                    <div class="glass-card leaderboard-card">
+                        <h3>🏆 CREATOR LEADERBOARD</h3>
+                        <div class="leaderboard-list" id="leaderboard-container">
+                            <!-- Filled dynamically by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Game Statistics Summary -->
+                    <div class="glass-card stats-summary-card">
+                        <h3>📊 ENGINE REALTIME STATS</h3>
+                        <div class="stat-row">
+                            <span>Total Members</span>
+                            <strong class="text-cyan">3,492</strong>
+                        </div>
+                        <div class="stat-row">
+                            <span>Uploaded Charts</span>
+                            <strong class="text-magenta">841</strong>
+                        </div>
+                        <div class="stat-row">
+                            <span>Stars Handed Out</span>
+                            <strong class="text-cyan">182K</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: DOWNLOAD PAGE -->
+        <section id="download" class="page-section">
+            <div class="download-container">
+                <div class="section-header">
+                    <h2 class="section-title">CHOOSE YOUR STAGE</h2>
+                    <p class="section-desc">Download the client launcher for Windows or browse the open-source repository.</p>
+                </div>
+                
+                <div class="download-grid">
+                    <div class="glass-card download-card glow-cyan">
+                        <div class="platform-badge">RECOMMENDED</div>
+                        <div class="dl-icon">❖</div>
+                        <h3>Windows Client Installer</h3>
+                        <p>Fully bundled build featuring Godot 4 high-fidelity rendering, native input polling, and local session persistence. Includes automated game updates.</p>
+                        <span class="file-info">Size: 42.4 MB • Format: .msi</span>
+                        <a href="#" class="btn-primary glow-cyan btn-full margin-top-auto">DOWNLOAD FOR WINDOWS</a>
+                    </div>
+
+                    <div class="glass-card download-card glow-magenta">
+                        <div class="platform-badge zip">PORTABLE</div>
+                        <div class="dl-icon">⚡</div>
+                        <h3>Windows Standalone ZIP</h3>
+                        <p>No installer required. Simply download the compressed level editor client, extract the contents, double click the executable, and jump straight into mapping.</p>
+                        <span class="file-info">Size: 39.8 MB • Format: .zip</span>
+                        <a href="#" class="btn-primary glow-magenta btn-full margin-top-auto">DOWNLOAD STANDALONE</a>
+                    </div>
+                </div>
+
+                <!-- System Requirements & Specs -->
+                <div class="requirements-box glass-card">
+                    <h3>SYSTEM SPECIFICATIONS</h3>
+                    <div class="specs-grid">
+                        <div class="spec-col">
+                            <h4>MINIMUM REQUIREMENTS</h4>
+                            <ul>
+                                <li><strong>OS:</strong> Windows 10/11 64-bit</li>
+                                <li><strong>Processor:</strong> Dual Core 2.0 GHz</li>
+                                <li><strong>Memory:</strong> 4 GB RAM</li>
+                                <li><strong>Graphics:</strong> DX11 compatible GPU (Intel HD 500+)</li>
+                                <li><strong>Storage:</strong> 200 MB free space</li>
+                            </ul>
+                        </div>
+                        <div class="spec-col">
+                            <h4>RECOMMENDED</h4>
+                            <ul>
+                                <li><strong>OS:</strong> Windows 11 64-bit</li>
+                                <li><strong>Processor:</strong> Quad Core 3.0 GHz+</li>
+                                <li><strong>Memory:</strong> 8 GB RAM</li>
+                                <li><strong>Graphics:</strong> Dedicated GPU (GTX 1050 / RX 560)</li>
+                                <li><strong>Keyboard:</strong> N-Key Rollover (NKRO) Mechanical</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: DOCUMENTATION PAGE -->
+        <section id="docs" class="page-section">
+            <div class="docs-layout">
+                <!-- Documentation Sidebar -->
+                <aside class="docs-sidebar glass-card">
+                    <ul class="docs-nav-list">
+                        <li><a href="#doc-intro" class="docs-nav-link active" id="link-doc-intro">Getting Started</a></li>
+                        <li><a href="#doc-keyboard" class="docs-nav-link" id="link-doc-keyboard">Keyboard Bindings</a></li>
+                        <li><a href="#doc-editor" class="docs-nav-link" id="link-doc-editor">Creator Level Editor</a></li>
+                        <li><a href="#doc-payg" class="docs-nav-link" id="link-doc-payg">Place As You Go Mode</a></li>
+                        <li><a href="#doc-ffmpeg" class="docs-nav-link" id="link-doc-ffmpeg">Audio Formats & FFmpeg</a></li>
+                        <li><a href="#doc-database" class="docs-nav-link" id="link-doc-database">Cloud Integration</a></li>
+                    </ul>
+                </aside>
+
+                <!-- Documentation Content Cards -->
+                <div class="docs-main">
+                    <article id="doc-intro" class="doc-article active">
+                        <h2>Getting Started</h2>
+                        <p>Welcome to <strong>Keyboard Symphony</strong>, a rhythm adventure crafted strictly for mechanical and high-refresh keyboard layouts. Unlike standard 4-key rhythm systems, Keyboard Symphony leverages a full <strong>10-lane grid</strong> matching your keyboard's home/top row keys.</p>
+                        <p>To begin playing, download the desktop client launcher, register a new player profile (or log in offline), and load up the default levels or import custom community charts.</p>
+                        <div class="alert-box note">
+                            <strong>NOTE:</strong> Ensure your mechanical keyboard supports <strong>N-Key Rollover (NKRO)</strong> to play chords requiring 5+ simultaneous keys accurately.
+                        </div>
+                    </article>
+
+                    <article id="doc-keyboard" class="doc-article">
+                        <h2>Keyboard Bindings</h2>
+                        <p>The standard layout utilizes the top row of alphabetical keys. These map chronologically to the 10 game lanes moving from left to right:</p>
+                        
+                        <div class="kb-visualizer-container">
+                            <div class="kb-row">
+                                <div class="kb-key cyan">Q</div>
+                                <div class="kb-key cyan">W</div>
+                                <div class="kb-key cyan">E</div>
+                                <div class="kb-key cyan">R</div>
+                                <div class="kb-key magenta">T</div>
+                                <div class="kb-key magenta">Y</div>
+                                <div class="kb-key cyan">U</div>
+                                <div class="kb-key cyan">I</div>
+                                <div class="kb-key cyan">O</div>
+                                <div class="kb-key cyan">P</div>
+                            </div>
+                        </div>
+
+                        <p>Additionally, lanes <strong>11 and 12</strong> are reserved for screen camera shakes, lighting drops, and specialty environmental particle effects. These lanes do not require key bindings during active play; they are handled automatically by the rhythm rendering pipeline when the visualizer notes pass the active hitbar.</p>
+                    </article>
+
+                    <article id="doc-editor" class="doc-article">
+                        <h2>Creator Level Editor</h2>
+                        <p>Unleash your inner beat creator with our <strong>Level Editor</strong>. Inside the editor dashboard, you can import level assets, set your BPM timings, and configure complex grid configurations.</p>
+                        <h3>Key Editor Shortcuts:</h3>
+                        <ul>
+                            <li><strong>Left Click</strong>: Select a note to enter Edit Mode, or click an empty space in edit mode to toggle Spawn Mode.</li>
+                            <li><strong>Right Click</strong>: Remove/delete notes instantly from the active grid.</li>
+                            <li><strong>Space</strong>: Toggle song playback (Play/Stop).</li>
+                            <li><strong>Mouse Scroll</strong>: Vertically zoom or scroll the note timeline.</li>
+                        </ul>
+                    </article>
+
+                    <article id="doc-payg" class="doc-article">
+                        <h2>Place As You Go Mode (PAYGM)</h2>
+                        <p>Recording complex streams manually can be tedious. <strong>PAYG Mode</strong> allows creators to record their chart in real-time:</p>
+                        <ol>
+                            <li>Click the <strong>⏺ RECORD (PAYG)</strong> button on the editor sidebar.</li>
+                            <li>A <strong>3-second countdown</strong> will trigger, letting you prep your hands.</li>
+                            <li>The playback playhead starts moving. Tap keys in rhythm to place single beat notes.</li>
+                            <li>Hold a key down for longer than <strong>0.5 beats</strong> to automatically stretch it into a glowing <strong>Hold Note</strong> until you release the key!</li>
+                        </ol>
+                    </article>
+
+                    <article id="doc-ffmpeg" class="doc-article">
+                        <h2>Audio Formats & FFmpeg Integration</h2>
+                        <p>To avoid playback stutters, Keyboard Symphony enforces <strong>strict OGG audio requirements</strong>. If you select a `.mp3` or `.wav` song to map:</p>
+                        <ol>
+                            <li>The editor automatically prompts: <em>"The selected audio is not in OGG format. Would you like the game to convert/rename it to .ogg automatically?"</em></li>
+                            <li><strong>Clicking Yes</strong>: Invokes the local system's <strong>FFmpeg</strong> engine synchronously to transcode the file:
+                                <code>ffmpeg -y -i input.mp3 -c:a libvorbis -qscale:a 5 output.ogg</code>
+                            </li>
+                            <li><strong>Clicking No</strong>: Discards the import entirely to ensure timing integrity.</li>
+                        </ol>
+                    </article>
+
+                    <article id="doc-database" class="doc-article">
+                        <h2>Cloud Integration & Sync</h2>
+                        <p>Keyboard Symphony features a fully automated, offline-first backend powered by <strong>Supabase Auth & Database APIs</strong>:</p>
+                        <ul>
+                            <li><strong>Local Session Encryption</strong>: Stores user JWT credentials securely using AES-256 local configuration.</li>
+                            <li><strong>SyncManager Reconciliation</strong>: Whenever you launch the game or complete a level, the game checks your local timestamp against the database and cloud syncs your stars, member stats, XP levels, and custom charts automatically.</li>
+                        </ul>
+                    </article>
+                </div>
+            </div>
+        </article>
     </main>
 
-    <script src="script.js"></script>
+    <!-- Global Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <p>© 2026 Keyboard Symphony Project. Designed with Neon Cyan & Magenta.</p>
+            <div class="footer-links">
+                <a href="#/docs">GitHub Source</a>
+                <a href="#/docs">Terms of Service</a>
+                <a href="#/docs">Creator Licences</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Local App Script -->
+    <script src="app.js"></script>
 </body>
 </html>
