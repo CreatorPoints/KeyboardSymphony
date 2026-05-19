@@ -595,117 +595,244 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ---------------------------------------------------------
-    // 6. DYNAMIC COMMUNITY LEVEL & LEADERBOARD GRID RENDER
+    // 6. DYNAMIC SUPABASE LEADERBOARD SYSTEM (AAA Polish)
     // ---------------------------------------------------------
-    
-    // Curated mock levels detailing 1-20 stars
-    const communityCharts = [
-        { title: "Cybernetic Overture", artist: "Hologram Synths", creator: "ByteWhip", stars: 4, downloads: 412 },
-        { title: "Mechanical Resonance", artist: "Piston Rhythmics", creator: "GearGrinder", stars: 7, downloads: 689 },
-        { title: "N-Key Symphony No. 9", artist: "Deno Core Orchestra", creator: "Member #0001", stars: 20, downloads: 1421 },
-        { title: "Cascading Streams", artist: "Linear Interpolation", creator: "MatrixRunner", stars: 12, downloads: 832 },
-        { title: "Supabase Syncrenicity", artist: "The Table Joins", creator: "QueryMaster", stars: 9, downloads: 721 },
-        { title: "Binary Torrent", artist: "Infinite Threads", creator: "ByteWhip", stars: 16, downloads: 541 },
-        { title: "Oscillator Sweep", artist: "Web Audio Club", creator: "SynthKid", stars: 3, downloads: 290 },
-        { title: "Keyboard Cataclysm", artist: "Mechanical Panic", creator: "Member #0001", stars: 19, downloads: 1289 },
-        { title: "Vorbis Pulse", artist: "Ogg Devs", creator: "Transcoder", stars: 6, downloads: 409 }
-    ];
+    const usersListContainer = document.getElementById("users-list-container");
+    const userSearchInput = document.getElementById("user-search");
+    const forceRefreshBtn = document.getElementById("force-refresh-btn");
+    const categoryTabs = document.querySelectorAll(".cat-tab");
+    const syncIcon = document.getElementById("sync-icon");
+    const syncText = document.getElementById("sync-text");
 
-    // Mock Creator Leaderboard showcasing PIDs
-    const creatorsLeaderboard = [
-        { rank: 1, name: "Member #0001", pid: "PID #0001", stars: 2541, medal: "gold" },
-        { rank: 2, name: "ByteWhip", pid: "PID #0042", stars: 1980, medal: "silver" },
-        { rank: 3, name: "GearGrinder", pid: "PID #0112", stars: 1429, medal: "bronze" },
-        { rank: 4, name: "MatrixRunner", pid: "PID #0056", stars: 932, medal: "none" },
-        { rank: 5, name: "QueryMaster", pid: "PID #0099", stars: 721, medal: "none" }
-    ];
+    const supabaseUrl = "https://khkhsxmfdplvvajolqyg.supabase.co";
+    // Legacy anon key works perfectly for public REST SELECT calls
+    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtoa2hzeG1mZHBsdnZham9scXlnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg5MjA4MjEsImV4cCI6MjA5NDQ5NjgyMX0.-eo-E06FwWYiJr5n_U7ARmYSxKnLuBAB7TsVsWAH7_U";
 
-    const chartsContainer = document.getElementById("charts-container");
-    const leaderboardContainer = document.getElementById("leaderboard-container");
-    const chartSearch = document.getElementById("chart-search");
-    const starFilter = document.getElementById("star-filter");
+    let playersData = [];
+    let currentCategory = "xp";
+    let filterQuery = "";
 
-    function renderCharts() {
-        if (!chartsContainer) return;
-        chartsContainer.innerHTML = "";
+    function getSyncTimeString() {
+        const d = new Date();
+        let hours = d.getHours();
+        const minutes = d.getMinutes().toString().padStart(2, "0");
+        const ampm = hours >= 12 ? "PM" : "AM";
+        hours = hours % 12;
+        hours = hours ? hours : 12;
+        return `${hours}:${minutes} ${ampm}`;
+    }
 
-        const searchQuery = chartSearch ? chartSearch.value.toLowerCase() : "";
-        const diffFilter = starFilter ? starFilter.value : "all";
+    function formatNumber(num) {
+        return num.toLocaleString();
+    }
 
-        const filtered = communityCharts.filter(chart => {
-            // Search validation
-            const matchesSearch = chart.title.toLowerCase().includes(searchQuery) ||
-                                  chart.artist.toLowerCase().includes(searchQuery) ||
-                                  chart.creator.toLowerCase().includes(searchQuery);
-            
-            // Difficulty categorization
-            let matchesDiff = true;
-            if (diffFilter === "easy") matchesDiff = (chart.stars >= 1 && chart.stars <= 5);
-            else if (diffFilter === "medium") matchesDiff = (chart.stars >= 6 && chart.stars <= 12);
-            else if (diffFilter === "hard") matchesDiff = (chart.stars >= 13 && chart.stars <= 18);
-            else if (diffFilter === "expert") matchesDiff = (chart.stars >= 19 && chart.stars <= 20);
+    function formatDate(unixSecs) {
+        if (!unixSecs) return "N/A";
+        const d = new Date(unixSecs * 1000);
+        return d.toISOString().split("T")[0];
+    }
 
-            return matchesSearch && matchesDiff;
+    function renderLeaderboardData() {
+        if (!usersListContainer) return;
+        usersListContainer.innerHTML = "";
+
+        // Clone and filter
+        let filtered = playersData.filter(p => {
+            const name = (p.display_name || "Player").toLowerCase();
+            const rank = (p.rank || "Player").toLowerCase();
+            const query = filterQuery.toLowerCase();
+            return name.includes(query) || rank.includes(query);
+        });
+
+        // Sort by selected category
+        filtered.sort((a, b) => {
+            if (currentCategory === "joined_at") {
+                // Ascending for joined date (oldest pioneers first!)
+                return (a.joined_at || 0) - (b.joined_at || 0);
+            } else {
+                // Descending for numerical progression metrics
+                return (b[currentCategory] || 0) - (a[currentCategory] || 0);
+            }
         });
 
         if (filtered.length === 0) {
-            chartsContainer.innerHTML = `<div class="glass-card" style="grid-column: 1/-1; padding: 40px; text-align: center; color: var(--text-muted);">NO CHARTS FOUND MATCHING YOUR FILTERS.</div>`;
+            usersListContainer.innerHTML = `
+                <div class="leaderboard-loading">
+                    <p style="color: var(--text-muted);">NO PLAYERS FOUND MATCHING "${filterQuery.toUpperCase()}".</p>
+                </div>
+            `;
             return;
         }
 
-        filtered.forEach(chart => {
-            const starsText = "★ ".repeat(Math.min(5, Math.ceil(chart.stars / 4))) + `(${chart.stars})`;
-            const cardHTML = `
-                <div class="glass-card chart-card glow-hover-cyan">
-                    <div class="chart-card-header">
-                        <span class="chart-stars">${starsText}</span>
-                        <span class="badge" style="background:rgba(0,240,255,0.05); border-color:rgba(0,240,255,0.2); color:var(--neon-cyan); padding: 2px 8px; font-size:0.6rem;">${chart.downloads} DLs</span>
-                    </div>
-                    <div class="chart-title">${chart.title}</div>
-                    <div class="chart-artist">${chart.artist}</div>
-                    <div class="chart-footer">
-                        <div class="chart-creator">BY <span>${chart.creator}</span></div>
-                        <a href="#" class="chart-btn" onclick="event.preventDefault(); alert('Level downloading directly to editor synced cache...');">GET CHART</a>
-                    </div>
-                </div>
-            `;
-            chartsContainer.insertAdjacentHTML("beforeend", cardHTML);
-        });
-    }
+        filtered.forEach((player, index) => {
+            const rankNum = index + 1;
+            let rowClass = "player-row";
+            if (rankNum === 1) rowClass += " rank-1";
+            else if (rankNum === 2) rowClass += " rank-2";
+            else if (rankNum === 3) rowClass += " rank-3";
 
-    function renderLeaderboard() {
-        if (!leaderboardContainer) return;
-        leaderboardContainer.innerHTML = "";
+            // Medal indicator or absolute number
+            let rankDisplay = `#${rankNum}`;
+            if (rankNum === 1) rankDisplay = "🥇";
+            else if (rankNum === 2) rankDisplay = "🥈";
+            else if (rankNum === 3) rankDisplay = "🥉";
 
-        creatorsLeaderboard.forEach(item => {
-            let rankClass = "rank-lbl";
-            if (item.medal === "gold") rankClass += " gold";
-            else if (item.medal === "silver") rankClass += " silver";
-            else if (item.medal === "bronze") rankClass += " bronze";
+            const name = player.display_name || "Guest Player";
+            const avatar = player.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${name}`;
+            const pid = player.pid ? `PID #${player.pid.toString().padStart(4, "0")}` : "PID #9999";
+            
+            // Highlight active column in view
+            const xpVal = `<span class="stat-xp-val ${currentCategory === 'xp' ? 'text-cyan' : ''}">${formatNumber(player.xp || 0)} XP</span>`;
+            const starsVal = `<span class="stat-stars-val ${currentCategory === 'stars' ? 'text-yellow' : ''}">★ ${formatNumber(player.stars || 0)}</span>`;
+            const coinsVal = `<span class="stat-coins-val ${currentCategory === 'currency' ? 'text-green' : ''}">$ ${formatNumber(player.currency || 0)}</span>`;
+            const levelsVal = `<span class="stat-levels-val ${currentCategory === 'levels_completed' ? 'text-magenta' : ''}">${formatNumber(player.levels_completed || 0)}</span>`;
+            
+            const tierBadge = `<span class="tier-badge ${player.rank.toLowerCase()}">${player.rank}</span>`;
+            const joinedDate = formatDate(player.joined_at);
 
-            const rankContent = item.rank <= 3 ? "★" : item.rank;
-
-            const itemHTML = `
-                <div class="leaderboard-item">
-                    <div class="leaderboard-profile">
-                        <span class="${rankClass}">${rankContent}</span>
-                        <div>
-                            <div class="creator-name">${item.name}</div>
-                            <div class="creator-pid">${item.pid}</div>
+            const rowHTML = `
+                <div class="${rowClass}">
+                    <div class="col-rank">${rankDisplay}</div>
+                    <div class="col-player">
+                        <div class="player-avatar">
+                            <img src="${avatar}" alt="${name}" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=${name}'">
+                        </div>
+                        <div class="player-name-wrapper">
+                            <span class="player-name">${name}</span>
+                            <span class="player-pid">${pid}</span>
                         </div>
                     </div>
-                    <span class="creator-stars">${item.stars} ★</span>
+                    <div class="col-tier">${tierBadge}</div>
+                    <div class="col-xp">${xpVal}</div>
+                    <div class="col-stars">${starsVal}</div>
+                    <div class="col-coins">${coinsVal}</div>
+                    <div class="col-levels">${levelsVal}</div>
+                    <div class="col-joined">${joinedDate}</div>
                 </div>
             `;
-            leaderboardContainer.insertAdjacentHTML("beforeend", itemHTML);
+            usersListContainer.insertAdjacentHTML("beforeend", rowHTML);
         });
     }
 
-    // Connect filter triggers
-    if (chartSearch) chartSearch.addEventListener("input", renderCharts);
-    if (starFilter) starFilter.addEventListener("change", renderCharts);
+    async function loadLeaderboardEngine(forceRefresh = false) {
+        if (!usersListContainer) return;
 
-    // Initial table render execution
-    renderCharts();
-    renderLeaderboard();
+        if (syncIcon && syncText) {
+            syncIcon.textContent = "📡";
+            syncIcon.style.animation = "spin 1.5s linear infinite";
+            syncText.textContent = "Checking live sync updates...";
+        }
+
+        const cachedPlayers = localStorage.getItem("leaderboard_cached_players");
+        const cachedTimestamp = localStorage.getItem("leaderboard_cached_timestamp");
+        const cachedSyncDate = localStorage.getItem("leaderboard_cached_sync_date");
+
+        try {
+            // Step 1: Lightweight fetch checking the latest max timestamp
+            const timeCheckUrl = `${supabaseUrl}/rest/v1/player_stats?select=last_updated&order=last_updated.desc&limit=1`;
+            const headers = { apikey: supabaseKey, Authorization: `Bearer ${supabaseKey}` };
+
+            const checkResponse = await fetch(timeCheckUrl, { headers });
+            if (!checkResponse.ok) throw new Error("Lightweight sync check failed");
+
+            const checkResult = await checkResponse.json();
+            const latestDbTimestamp = checkResult.length > 0 ? checkResult[0].last_updated.toString() : "0";
+
+            // Step 2: Compare cached timestamp.
+            // If they match AND we are NOT forcing a reload, return cached data!
+            if (!forceRefresh && cachedPlayers && cachedTimestamp === latestDbTimestamp) {
+                playersData = JSON.parse(cachedPlayers);
+                
+                if (syncIcon && syncText) {
+                    syncIcon.textContent = "⚡";
+                    syncIcon.style.animation = "none";
+                    syncText.textContent = `Cached (Synced: ${cachedSyncDate || "Today"})`;
+                }
+                renderLeaderboardData();
+                return;
+            }
+
+            // Step 3: Drift / Cache-Miss Case: Perform a full data fetch
+            if (syncText) syncText.textContent = "Pulling real-time updates...";
+
+            const fullDataUrl = `${supabaseUrl}/rest/v1/player_stats?select=id,xp,currency,stars,levels_completed,rank,joined_at,display_name,avatar_url`;
+            const fullResponse = await fetch(fullDataUrl, { headers });
+            if (!fullResponse.ok) throw new Error("Leaderboard full pull failed");
+
+            const fullResult = await fullResponse.json();
+            playersData = fullResult;
+
+            // Cache data in localStorage
+            const nowTimeStr = getSyncTimeString();
+            localStorage.setItem("leaderboard_cached_players", JSON.stringify(playersData));
+            localStorage.setItem("leaderboard_cached_timestamp", latestDbTimestamp);
+            localStorage.setItem("leaderboard_cached_sync_date", nowTimeStr);
+
+            if (syncIcon && syncText) {
+                syncIcon.textContent = "✅";
+                syncIcon.style.animation = "none";
+                syncText.textContent = `Live Synced (${nowTimeStr})`;
+            }
+
+            renderLeaderboardData();
+
+        } catch (error) {
+            console.error("Leaderboard Sync Failure:", error);
+            
+            // Fallback: If network is offline but cache exists, load it
+            if (cachedPlayers) {
+                playersData = JSON.parse(cachedPlayers);
+                if (syncIcon && syncText) {
+                    syncIcon.textContent = "⚠️";
+                    syncIcon.style.animation = "none";
+                    syncText.textContent = `Offline (Loaded: ${cachedSyncDate || "Cache"})`;
+                }
+                renderLeaderboardData();
+            } else {
+                // Fatal fallback: render error view
+                if (syncIcon && syncText) {
+                    syncIcon.textContent = "❌";
+                    syncIcon.style.animation = "none";
+                    syncText.textContent = "Offline / Connection Error";
+                }
+                usersListContainer.innerHTML = `
+                    <div class="leaderboard-loading">
+                        <p style="color: var(--neon-magenta);">CRITICAL DATABASE CONNECTION ERROR</p>
+                        <p style="font-size:0.85rem; color: rgba(255,255,255,0.4);">Check your local network firewall or internet connection.</p>
+                        <button id="retry-btn" class="btn-primary small-btn" style="margin-top: 10px;">RETRY CONNECTION</button>
+                    </div>
+                `;
+                const retryBtn = document.getElementById("retry-btn");
+                if (retryBtn) {
+                    retryBtn.addEventListener("click", () => loadLeaderboardEngine(true));
+                }
+            }
+        }
+    }
+
+    // Connect control triggers
+    if (userSearchInput) {
+        userSearchInput.addEventListener("input", (e) => {
+            filterQuery = e.target.value;
+            renderLeaderboardData();
+        });
+    }
+
+    if (forceRefreshBtn) {
+        forceRefreshBtn.addEventListener("click", () => {
+            loadLeaderboardEngine(true);
+        });
+    }
+
+    categoryTabs.forEach(tab => {
+        tab.addEventListener("click", () => {
+            categoryTabs.forEach(t => t.classList.remove("active"));
+            tab.classList.add("active");
+            currentCategory = tab.getAttribute("data-category");
+            renderLeaderboardData();
+        });
+    });
+
+    // Start execution
+    loadLeaderboardEngine();
 });

@@ -52,53 +52,52 @@
     <main class="main-content">
         <!-- SECTION 2: COMMUNITY PAGE -->
         <section id="community" class="page-section active">
-            <div class="community-layout">
-                <div class="community-main">
+            <div class="leaderboard-layout">
+                <div class="leaderboard-header-section">
                     <div class="section-header">
-                        <h2 class="section-title">COMMUNITY CREATIONS</h2>
-                        <p class="section-desc">Search, download, and compete on the absolute most challenging custom charts uploaded by members.</p>
-                    </div>
-                    
-                    <div class="search-bar-container glass-card">
-                        <input type="text" id="chart-search" placeholder="Search level name, artist, or creator...">
-                        <select id="star-filter">
-                            <option value="all">All Difficulties</option>
-                            <option value="easy">Easy (1 - 5 Stars)</option>
-                            <option value="medium">Medium (6 - 12 Stars)</option>
-                            <option value="hard">Hard (13 - 18 Stars)</option>
-                            <option value="expert">Godlike (19 - 20 Stars)</option>
-                        </select>
+                        <h2 class="section-title">GLOBAL LEADERBOARD</h2>
+                        <p class="section-desc">Search, sort, and inspect real-time player progression, XP levels, and ranking tiers synced from the live Supabase cloud.</p>
                     </div>
 
-                    <!-- Custom levels list -->
-                    <div class="charts-grid" id="charts-container">
-                        <!-- Filled dynamically by JavaScript -->
+                    <!-- Cache Optimization & Sync Status -->
+                    <div class="sync-status-bar glass-card">
+                        <span id="sync-icon">📡</span>
+                        <span id="sync-text">Connecting to database...</span>
+                        <button id="force-refresh-btn" class="btn-secondary small-btn">REFRESH</button>
                     </div>
                 </div>
 
-                <div class="community-sidebar">
-                    <!-- Creator Leaderboard -->
-                    <div class="glass-card leaderboard-card">
-                        <h3>🏆 CREATOR LEADERBOARD</h3>
-                        <div class="leaderboard-list" id="leaderboard-container">
-                            <!-- Filled dynamically by JavaScript -->
-                        </div>
+                <!-- Filters & Category Selector -->
+                <div class="leaderboard-controls glass-card">
+                    <div class="search-box">
+                        <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        <input type="text" id="user-search" placeholder="Search players by name or rank tier...">
                     </div>
+                    <div class="category-tabs">
+                        <button class="cat-tab active" data-category="xp">SORT BY XP</button>
+                        <button class="cat-tab" data-category="stars">SORT BY STARS</button>
+                        <button class="cat-tab" data-category="currency">SORT BY COINS</button>
+                        <button class="cat-tab" data-category="levels_completed">SORT BY LEVELS</button>
+                        <button class="cat-tab" data-category="joined_at">SORT BY JOINED</button>
+                    </div>
+                </div>
 
-                    <!-- Game Statistics Summary -->
-                    <div class="glass-card stats-summary-card">
-                        <h3>📊 ENGINE REALTIME STATS</h3>
-                        <div class="stat-row">
-                            <span>Total Members</span>
-                            <strong class="text-cyan">3,492</strong>
-                        </div>
-                        <div class="stat-row">
-                            <span>Uploaded Charts</span>
-                            <strong class="text-magenta">841</strong>
-                        </div>
-                        <div class="stat-row">
-                            <span>Stars Handed Out</span>
-                            <strong class="text-cyan">182K</strong>
+                <!-- Leaderboard Player Grid/List -->
+                <div class="leaderboard-container glass-card">
+                    <div class="leaderboard-table-header">
+                        <div class="col-rank">#</div>
+                        <div class="col-player">PLAYER</div>
+                        <div class="col-tier">RANK TIER</div>
+                        <div class="col-xp">XP ACCUMULATED</div>
+                        <div class="col-stars">STARS</div>
+                        <div class="col-coins">COINS</div>
+                        <div class="col-levels">COMPLETED</div>
+                        <div class="col-joined">JOINED DATE</div>
+                    </div>
+                    <div class="leaderboard-list" id="users-list-container">
+                        <div class="leaderboard-loading">
+                            <div class="spinner"></div>
+                            <p>Loading player profiles...</p>
                         </div>
                     </div>
                 </div>
