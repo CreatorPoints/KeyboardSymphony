@@ -134,6 +134,47 @@ document.addEventListener("DOMContentLoaded", () => {
     let canvasWidth = window.innerWidth;
     let canvasHeight = window.innerHeight;
 
+    // Tracker for mouse positioning
+    let mouseX = -1000;
+    let mouseY = -1000;
+
+    window.addEventListener("mousemove", (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+    });
+
+    window.addEventListener("mouseleave", () => {
+        mouseX = -1000;
+        mouseY = -1000;
+    });
+
+    // AAA Click Energy burst dispersion
+    window.addEventListener("click", (e) => {
+        // Prevent click bursts when interacting with UI buttons, links, search bars or keys
+        if (
+            e.target.tagName === "BUTTON" || 
+            e.target.tagName === "A" || 
+            e.target.tagName === "INPUT" || 
+            e.target.tagName === "SELECT" || 
+            e.target.closest(".key-slot") || 
+            e.target.closest(".docs-sidebar")
+        ) {
+            return;
+        }
+        
+        const colors = ["#00f0ff", "#ff007f"];
+        for (let i = 0; i < 24; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            const velocity = Math.random() * 5 + 2;
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            const p = new Particle(e.clientX, e.clientY, color);
+            p.speedX = Math.cos(angle) * velocity;
+            p.speedY = Math.sin(angle) * velocity;
+            p.decay = Math.random() * 0.02 + 0.015; // Decay faster
+            particles.push(p);
+        }
+    });
+
     function resizeCanvas() {
         canvasWidth = window.innerWidth;
         canvasHeight = window.innerHeight;
@@ -147,28 +188,42 @@ document.addEventListener("DOMContentLoaded", () => {
         constructor(x, y, color) {
             this.x = x;
             this.y = y;
-            this.size = Math.random() * 4 + 2;
-            this.speedX = Math.random() * 4 - 2;
-            this.speedY = -(Math.random() * 5 + 3); // Rise upwards
+            this.size = Math.random() * 3 + 1.5;
+            this.speedX = Math.random() * 2 - 1;
+            this.speedY = -(Math.random() * 3 + 1.5); // Rise upwards
             this.color = color;
             this.alpha = 1.0;
-            this.decay = Math.random() * 0.015 + 0.008;
+            this.decay = Math.random() * 0.008 + 0.004;
             this.sparkle = Math.random() > 0.5;
         }
 
         update() {
+            // Apply slight mechanical wind
             this.x += this.speedX;
             this.y += this.speedY;
             this.alpha -= this.decay;
+
+            // AAA Magnetic Cursor Attraction Physics
+            if (mouseX >= 0 && mouseY >= 0) {
+                const dx = mouseX - this.x;
+                const dy = mouseY - this.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                if (distance < 260) {
+                    const pullFactor = (260 - distance) / 260 * 0.12;
+                    this.speedX += (dx / distance) * pullFactor;
+                    this.speedY += (dy / distance) * pullFactor;
+                }
+            }
+
             if (this.sparkle) {
-                this.size = Math.max(0.1, this.size + (Math.random() * 0.8 - 0.4));
+                this.size = Math.max(0.1, this.size + (Math.random() * 0.4 - 0.2));
             }
         }
 
         draw() {
             ctx.save();
             ctx.globalAlpha = this.alpha;
-            ctx.shadowBlur = 10;
+            ctx.shadowBlur = 8;
             ctx.shadowColor = this.color;
             ctx.fillStyle = this.color;
             ctx.beginPath();
@@ -180,18 +235,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Active visualizer lanes tracking list
     const activeLanesState = Array(10).fill(false);
+    const visHeights = Array(10).fill(4);
 
     function spawnVisualizerBurst(laneIndex) {
-        // Calculate coordinate of virtual bottom lanes
         const startX = (canvasWidth / 2) - 200 + (laneIndex * 44) + 22;
         const startY = canvasHeight - 20;
 
-        // Choose color based on custom lane color maps
         const isMagenta = (laneIndex === 4 || laneIndex === 5);
         const particleColor = isMagenta ? "#ff007f" : "#00f0ff";
 
         // Spawn a spectacular burst of particles rising upwards
-        for (let i = 0; i < 15; i++) {
+        for (let i = 0; i < 16; i++) {
             particles.push(new Particle(startX, startY, particleColor));
         }
     }
@@ -202,8 +256,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Draw soft base gradient
         const bgGrad = ctx.createRadialGradient(canvasWidth / 2, canvasHeight / 2, 10, canvasWidth / 2, canvasHeight / 2, canvasWidth);
-        bgGrad.addColorStop(0, "#080914");
-        bgGrad.addColorStop(1, "#030305");
+        bgGrad.addColorStop(0, "#060710");
+        bgGrad.addColorStop(1, "#020204");
         ctx.fillStyle = bgGrad;
         ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
@@ -213,6 +267,43 @@ document.addEventListener("DOMContentLoaded", () => {
             p.update();
             p.draw();
         });
+
+        // AAA Cursor Halo trail rendering on Background canvas
+        if (mouseX >= 0 && mouseY >= 0) {
+            ctx.save();
+            ctx.globalAlpha = 0.08;
+            ctx.shadowBlur = 20;
+            ctx.shadowColor = "#00f0ff";
+            ctx.strokeStyle = "#00f0ff";
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.arc(mouseX, mouseY, 32, 0, Math.PI * 2);
+            ctx.stroke();
+
+            ctx.shadowColor = "#ff007f";
+            ctx.strokeStyle = "#ff007f";
+            ctx.beginPath();
+            ctx.arc(mouseX, mouseY, 16, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        // AAA Equalizer Visualizer Bars animation
+        const visBars = document.querySelectorAll(".vis-bar");
+        if (visBars.length > 0) {
+            const time = Date.now() * 0.003;
+            for (let i = 0; i < 10; i++) {
+                if (activeLanesState[i]) {
+                    // Dynamic explosive keystroke bounce
+                    visHeights[i] = Math.random() * 25 + 75;
+                } else {
+                    // Organic breathing ambient wave + decay filter
+                    const ambient = Math.sin(time + i * 0.7) * 8 + 12;
+                    visHeights[i] = Math.max(ambient, visHeights[i] - 5);
+                }
+                visBars[i].style.height = `${visHeights[i]}%`;
+            }
+        }
 
         // Render reactive visualizer lanes at screen bottom
         drawVisualizerLanes();

@@ -4,31 +4,111 @@
 
 /* Design Tokens & CSS Variables */
 :root {
-    --bg-base: #06060a;
-    --bg-darker: #030305;
-    --bg-glass: rgba(10, 10, 18, 0.65);
-    --bg-glass-heavy: rgba(8, 8, 14, 0.85);
-    --border-glass: rgba(255, 255, 255, 0.06);
-    --border-active-cyan: rgba(0, 240, 255, 0.5);
-    --border-active-magenta: rgba(255, 0, 127, 0.5);
+    --bg-base: #040408;
+    --bg-darker: #020203;
+    --bg-glass: rgba(6, 6, 12, 0.75);
+    --bg-glass-heavy: rgba(4, 4, 8, 0.9);
+    --border-glass: rgba(255, 255, 255, 0.04);
+    --border-active-cyan: rgba(0, 240, 255, 0.65);
+    --border-active-magenta: rgba(255, 0, 127, 0.65);
     
-    /* Neon Curated Color Palettes */
+    /* Neon Curated Color Palettes & HSL codes for transparency styling */
     --neon-cyan: #00f0ff;
+    --neon-cyan-hsl: 184, 100%, 50%;
     --neon-magenta: #ff007f;
+    --neon-magenta-hsl: 330, 100%, 50%;
     --neon-yellow: #ffb900;
-    --text-main: #e2e2ec;
-    --text-muted: #8e8e9f;
+    --text-main: #e6e6f0;
+    --text-muted: #7c7c94;
     
-    /* Premium Box Shadows & Glows */
+    /* Premium Box Shadows & Layered AAA Glows */
     --glow-cyan: 0 0 12px rgba(0, 240, 255, 0.35), 0 0 24px rgba(0, 240, 255, 0.15);
+    --glow-cyan-heavy: 0 0 20px rgba(0, 240, 255, 0.6), 0 0 40px rgba(0, 240, 255, 0.3);
     --glow-magenta: 0 0 12px rgba(255, 0, 127, 0.35), 0 0 24px rgba(255, 0, 127, 0.15);
+    --glow-magenta-heavy: 0 0 20px rgba(255, 0, 127, 0.6), 0 0 40px rgba(255, 0, 127, 0.3);
     --glow-yellow: 0 0 12px rgba(255, 185, 0, 0.35);
-    --shadow-premium: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+    --shadow-premium: 0 16px 48px 0 rgba(0, 0, 0, 0.7);
     
     /* Layout & Animation Specs */
-    --transition-smooth: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
-    --transition-snappy: all 0.15s ease-out;
+    --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    --transition-snappy: all 0.18s cubic-bezier(0.25, 1, 0.5, 1);
     --max-width-content: 1200px;
+}
+
+/* Moving Scanline Overlay for visual AAA polish */
+.cyber-scanline {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+    pointer-events: none;
+    background: linear-gradient(
+        rgba(18, 16, 16, 0) 50%, 
+        rgba(0, 0, 0, 0.12) 50%
+    ), linear-gradient(
+        90deg, 
+        rgba(255, 0, 0, 0.015), 
+        rgba(0, 255, 0, 0.008), 
+        rgba(0, 0, 255, 0.015)
+    );
+    background-size: 100% 3px, 6px 100%;
+    opacity: 0.35;
+}
+
+.cyber-scanline::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 120px;
+    background: linear-gradient(to bottom, rgba(0, 240, 255, 0.05) 0%, transparent 100%);
+    animation: scanline-move 10s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes scanline-move {
+    0% { transform: translateY(-120px); }
+    100% { transform: translateY(100vh); }
+}
+
+/* Background Particle Canvas & AAA Cyber Grid Overlay */
+#particle-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -3;
+    pointer-events: none;
+    background: radial-gradient(circle at 50% 50%, #080914 0%, #020204 100%);
+}
+
+/* AAA Moving Perspective Cyber Grid Backdrop */
+.cyber-grid {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -2;
+    pointer-events: none;
+    background-image: 
+        linear-gradient(rgba(0, 240, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 240, 255, 0.02) 1px, transparent 1px);
+    background-size: 60px 60px;
+    background-position: center center;
+    transform: perspective(600px) rotateX(45deg);
+    transform-origin: top center;
+    opacity: 0.75;
+    animation: grid-scroll 24s linear infinite;
+}
+
+@keyframes grid-scroll {
+    from { background-position: center 0px; }
+    to { background-position: center 1440px; }
 }
 
 /* Reset and Global Styles */
@@ -76,107 +156,160 @@ body {
     box-shadow: var(--glow-cyan);
 }
 
-/* Background Particle Canvas */
-#particle-canvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: -1;
-    pointer-events: none;
-    background: radial-gradient(circle at 50% 50%, #0d0e19 0%, #040407 100%);
-}
-
 /* ==========================================================================
    COMPONENTS: Premium Glassmorphic Cards & Buttons
    ========================================================================== */
 .glass-card {
+    position: relative;
     background: var(--bg-glass);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border: 1px solid var(--border-glass);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border-radius: 16px;
     box-shadow: var(--shadow-premium);
     transition: var(--transition-smooth);
+    border: 1px solid rgba(255, 255, 255, 0.03);
 }
 
-/* Neon Glow Button - Cyan */
+.glass-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(0, 240, 255, 0.2) 0%, rgba(255, 0, 127, 0.1) 50%, transparent 100%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    opacity: 0.6;
+    transition: var(--transition-smooth);
+}
+
+.glass-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+}
+
+.glass-card:hover::before {
+    opacity: 1;
+    background: linear-gradient(135deg, var(--neon-cyan) 0%, var(--neon-magenta) 50%, var(--neon-cyan) 100%);
+}
+
+/* Neon Glow Button - AAA Sci-Fi Clipped Profile */
 .btn-primary {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 10px 24px;
-    font-weight: 600;
-    font-size: 0.9rem;
-    letter-spacing: 0.05em;
+    padding: 12px 28px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     text-decoration: none;
     color: #ffffff;
     background: transparent;
-    border: 1.5px solid var(--neon-cyan);
-    border-radius: 8px;
     cursor: pointer;
     transition: var(--transition-smooth);
-    box-shadow: inset 0 0 0 rgba(0, 240, 255, 0);
+    position: relative;
+    clip-path: polygon(12px 0px, 100% 0px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0px 100%, 0px 12px);
+    border: none;
 }
 
-.btn-primary.glow-cyan {
-    box-shadow: var(--glow-cyan);
-    text-shadow: 0 0 4px rgba(255, 255, 255, 0.5);
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(0, 240, 255, 0.15) 0%, rgba(255, 0, 127, 0.05) 100%);
+    border: 1.5px solid var(--neon-cyan);
+    clip-path: inherit;
+    z-index: 1;
+    pointer-events: none;
+    transition: var(--transition-smooth);
+}
+
+.btn-primary.glow-cyan::before {
+    border-color: var(--neon-cyan);
+    background: linear-gradient(90deg, rgba(0, 240, 255, 0.25) 0%, rgba(0, 240, 255, 0.05) 100%);
+    box-shadow: inset 0 0 12px rgba(0, 240, 255, 0.2);
+}
+
+.btn-primary.glow-cyan:hover::before {
+    background: var(--neon-cyan);
+    border-color: var(--neon-cyan);
+    box-shadow: var(--glow-cyan-heavy);
 }
 
 .btn-primary.glow-cyan:hover {
-    background: var(--neon-cyan);
     color: var(--bg-base);
-    box-shadow: 0 0 20px rgba(0, 240, 255, 0.7), 0 0 40px rgba(0, 240, 255, 0.3);
-    text-shadow: none;
     transform: translateY(-2px);
+    filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.5));
 }
 
 /* Neon Glow Button - Magenta */
-.btn-primary.glow-magenta {
+.btn-primary.glow-magenta::before {
     border-color: var(--neon-magenta);
-    box-shadow: var(--glow-magenta);
+    background: linear-gradient(90deg, rgba(255, 0, 127, 0.25) 0%, rgba(255, 0, 127, 0.05) 100%);
+    box-shadow: inset 0 0 12px rgba(255, 0, 127, 0.2);
+}
+
+.btn-primary.glow-magenta:hover::before {
+    background: var(--neon-magenta);
+    border-color: var(--neon-magenta);
+    box-shadow: var(--glow-magenta-heavy);
 }
 
 .btn-primary.glow-magenta:hover {
-    background: var(--neon-magenta);
     color: #ffffff;
-    box-shadow: 0 0 20px rgba(255, 0, 127, 0.7), 0 0 40px rgba(255, 0, 127, 0.3);
-    text-shadow: none;
     transform: translateY(-2px);
+    filter: drop-shadow(0 0 10px rgba(255, 0, 127, 0.5));
 }
 
-/* Secondary Button - Subtle Grey Glass */
+/* Secondary Button - Subtle Grey Glass with AAA clipped corners */
 .btn-secondary {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 10px 24px;
-    font-weight: 600;
-    font-size: 0.9rem;
-    letter-spacing: 0.05em;
+    padding: 12px 28px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     text-decoration: none;
     color: var(--text-main);
-    background: rgba(255, 255, 255, 0.03);
-    border: 1.5px solid rgba(255, 255, 255, 0.15);
-    border-radius: 8px;
+    background: transparent;
     cursor: pointer;
+    transition: var(--transition-smooth);
+    position: relative;
+    clip-path: polygon(12px 0px, 100% 0px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0px 100%, 0px 12px);
+    border: none;
+}
+
+.btn-secondary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1.5px solid rgba(255, 255, 255, 0.1);
+    clip-path: inherit;
+    z-index: 1;
+    pointer-events: none;
     transition: var(--transition-smooth);
 }
 
-.btn-secondary:hover {
+.btn-secondary:hover::before {
     background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.4);
+    border-color: rgba(255, 255, 255, 0.35);
+}
+
+.btn-secondary:hover {
+    color: #ffffff;
     transform: translateY(-2px);
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.15));
 }
 
 .btn-large {
-    padding: 14px 36px;
-    font-size: 1rem;
-    border-radius: 10px;
+    padding: 16px 40px;
+    font-size: 0.95rem;
 }
 
 .btn-full {
@@ -442,25 +575,61 @@ body {
 }
 
 .synth-screen {
+    position: relative;
     height: 110px;
-    background: #030306;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: #020204;
+    border: 1px solid rgba(255, 255, 255, 0.04);
     border-radius: 10px;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     padding: 16px;
     margin-bottom: 16px;
     box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.9);
+    overflow: hidden;
 }
 
 .screen-instructions {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     color: var(--neon-cyan);
     text-shadow: var(--glow-cyan);
     text-align: center;
     line-height: 1.5;
+    z-index: 2;
+    pointer-events: none;
+    transition: var(--transition-smooth);
+}
+
+/* Holographic dynamic equalizer */
+.synth-visualizer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-around;
+    padding: 0 12px;
+    box-sizing: border-box;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.vis-bar {
+    width: 7%;
+    height: 4%;
+    background: linear-gradient(0deg, rgba(0, 240, 255, 0.05) 0%, rgba(0, 240, 255, 0.5) 80%, var(--neon-cyan) 100%);
+    box-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
+    border-radius: 2px 2px 0 0;
+    transition: height 0.1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.vis-bar:nth-child(5), .vis-bar:nth-child(6) {
+    background: linear-gradient(0deg, rgba(255, 0, 127, 0.05) 0%, rgba(255, 0, 127, 0.5) 80%, var(--neon-magenta) 100%);
+    box-shadow: 0 0 8px rgba(255, 0, 127, 0.4);
 }
 
 /* virtual 10 lanes display */
