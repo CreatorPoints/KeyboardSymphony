@@ -678,7 +678,8 @@ document.addEventListener("DOMContentLoaded", () => {
             else if (rankNum === 3) rankDisplay = "🥉";
 
             const name = player.display_name || "Guest Player";
-            const avatar = player.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${name}`;
+            const customAvatar = `https://khkhsxmfdplvvajolqyg.supabase.co/storage/v1/object/public/avatars/${player.id}.png`;
+            const fallbackAvatar = player.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${name}`;
             const pid = player.pid ? `PID #${player.pid.toString().padStart(4, "0")}` : "PID #9999";
             
             // Highlight active column in view
@@ -689,13 +690,13 @@ document.addEventListener("DOMContentLoaded", () => {
             
             const tierBadge = `<span class="tier-badge ${player.rank.toLowerCase()}">${player.rank}</span>`;
             const joinedDate = formatDate(player.joined_at);
-
+ 
             const rowHTML = `
                 <div class="${rowClass}">
                     <div class="col-rank">${rankDisplay}</div>
                     <div class="col-player">
                         <div class="player-avatar">
-                            <img src="${avatar}" alt="${name}" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=${name}'">
+                            <img src="${customAvatar}" alt="${name}" onerror="if(this.src!=='${fallbackAvatar}'){this.src='${fallbackAvatar}';}else{this.src='https://api.dicebear.com/7.x/bottts/svg?seed=${name}';}">
                         </div>
                         <div class="player-name-wrapper">
                             <span class="player-name">${name}</span>
