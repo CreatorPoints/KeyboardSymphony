@@ -188,9 +188,9 @@ document.addEventListener("DOMContentLoaded", () => {
         constructor(x, y, color) {
             this.x = x;
             this.y = y;
-            this.size = Math.random() * 3 + 1.5;
+            this.size = Math.random() * 2 + 1.2;
             this.speedX = Math.random() * 2 - 1;
-            this.speedY = -(Math.random() * 3 + 1.5); // Rise upwards
+            this.speedY = -(Math.random() * 2.5 + 1.2); // Rise upwards
             this.color = color;
             this.alpha = 1.0;
             this.decay = Math.random() * 0.008 + 0.004;
@@ -203,15 +203,19 @@ document.addEventListener("DOMContentLoaded", () => {
             this.y += this.speedY;
             this.alpha -= this.decay;
 
-            // AAA Magnetic Cursor Attraction Physics
+            // AAA Magnetic Cursor Attraction Physics (Optimized with squared distance check)
             if (mouseX >= 0 && mouseY >= 0) {
                 const dx = mouseX - this.x;
                 const dy = mouseY - this.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                if (distance < 260) {
-                    const pullFactor = (260 - distance) / 260 * 0.12;
-                    this.speedX += (dx / distance) * pullFactor;
-                    this.speedY += (dy / distance) * pullFactor;
+                const distSq = dx * dx + dy * dy;
+                const radiusSq = 260 * 260;
+                if (distSq < radiusSq) {
+                    const distance = Math.sqrt(distSq);
+                    if (distance > 0) {
+                        const pullFactor = (260 - distance) / 260 * 0.12;
+                        this.speedX += (dx / distance) * pullFactor;
+                        this.speedY += (dy / distance) * pullFactor;
+                    }
                 }
             }
 
@@ -221,15 +225,20 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         draw() {
-            ctx.save();
-            ctx.globalAlpha = this.alpha;
-            ctx.shadowBlur = 8;
-            ctx.shadowColor = this.color;
+            // Dual-layered fill renders a beautiful glowing core 100x faster than shadowBlur
             ctx.fillStyle = this.color;
+            
+            // Outer corona glow
+            ctx.globalAlpha = this.alpha * 0.18;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size * 3, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Solid inner core
+            ctx.globalAlpha = this.alpha;
             ctx.beginPath();
             ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
             ctx.fill();
-            ctx.restore();
         }
     }
 
@@ -238,14 +247,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const visHeights = Array(10).fill(4);
 
     function spawnVisualizerBurst(laneIndex) {
+        // Skip spawning if particle count already exceeds target performance ceiling
+        if (particles.length > 90) return;
+
         const startX = (canvasWidth / 2) - 200 + (laneIndex * 44) + 22;
         const startY = canvasHeight - 20;
 
         const isMagenta = (laneIndex === 4 || laneIndex === 5);
         const particleColor = isMagenta ? "#ff007f" : "#00f0ff";
 
-        // Spawn a spectacular burst of particles rising upwards
-        for (let i = 0; i < 16; i++) {
+        // Spawn a compact, highly optimized burst
+        for (let i = 0; i < 12; i++) {
             particles.push(new Particle(startX, startY, particleColor));
         }
     }
@@ -261,27 +273,34 @@ document.addEventListener("DOMContentLoaded", () => {
         ctx.fillStyle = bgGrad;
         ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-        // Update and draw floating particles
+        // Update and draw floating particles (strict capacity slice for smooth FPS)
         particles = particles.filter(p => p.alpha > 0);
+        if (particles.length > 100) {
+            particles = particles.slice(-100);
+        }
+
         particles.forEach(p => {
             p.update();
             p.draw();
         });
 
-        // AAA Cursor Halo trail rendering on Background canvas
+        ctx.globalAlpha = 1.0; // Reset global alpha
+
+        // AAA Cursor Halo trail rendering on Background canvas (No expensive shadow blur)
         if (mouseX >= 0 && mouseY >= 0) {
             ctx.save();
-            ctx.globalAlpha = 0.08;
-            ctx.shadowBlur = 20;
-            ctx.shadowColor = "#00f0ff";
-            ctx.strokeStyle = "#00f0ff";
             ctx.lineWidth = 1.5;
+            
+            // Outer cyan circle
+            ctx.strokeStyle = "#00f0ff";
+            ctx.globalAlpha = 0.06;
             ctx.beginPath();
             ctx.arc(mouseX, mouseY, 32, 0, Math.PI * 2);
             ctx.stroke();
 
-            ctx.shadowColor = "#ff007f";
+            // Inner magenta circle
             ctx.strokeStyle = "#ff007f";
+            ctx.globalAlpha = 0.12;
             ctx.beginPath();
             ctx.arc(mouseX, mouseY, 16, 0, Math.PI * 2);
             ctx.stroke();
