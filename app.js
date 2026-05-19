@@ -678,8 +678,11 @@ document.addEventListener("DOMContentLoaded", () => {
             else if (rankNum === 3) rankDisplay = "🥉";
 
             const name = player.display_name || "Guest Player";
-            const customAvatar = `https://khkhsxmfdplvvajolqyg.supabase.co/storage/v1/object/public/avatars/${player.id}.png`;
-            const fallbackAvatar = player.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${name}`;
+            const customAvatar = `https://khkhsxmfdplvvajolqyg.supabase.co/storage/v1/object/public/avatars/${player.id}.png?t=${player.last_updated || 0}`;
+            let fallbackAvatar = player.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${name}`;
+            if (fallbackAvatar.includes("/storage/v1/object/public/avatars/")) {
+                fallbackAvatar = `https://api.dicebear.com/7.x/bottts/svg?seed=${name}`;
+            }
             const pid = player.pid ? `PID #${player.pid.toString().padStart(4, "0")}` : "PID #9999";
             
             // Highlight active column in view
@@ -768,7 +771,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // Step 3: Drift / Cache-Miss Case: Perform a full data fetch
             if (syncText) syncText.textContent = "Pulling real-time updates...";
 
-            const fullDataUrl = `${supabaseUrl}/rest/v1/player_stats?select=id,xp,currency,stars,levels_completed,rank,joined_at,display_name,avatar_url,pid`;
+            const fullDataUrl = `${supabaseUrl}/rest/v1/player_stats?select=id,xp,currency,stars,levels_completed,rank,joined_at,display_name,avatar_url,pid,last_updated`;
             const fullResponse = await fetch(fullDataUrl, { headers });
             if (!fullResponse.ok) throw new Error("Leaderboard full pull failed");
 
