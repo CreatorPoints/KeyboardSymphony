@@ -17,6 +17,105 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ---------------------------------------------------------
+    // 1.1 GLOBAL SCENE TRANSITION SYSTEM (Godot-style)
+    // ---------------------------------------------------------
+    const overlay = document.querySelector(".scene-transition-overlay");
+    const gradients = [
+        "linear-gradient(135deg, #00f0ff, #ff007f)", // Cyan -> Magenta
+        "linear-gradient(135deg, #ff5e00, #ff007f)", // Orange -> Magenta
+        "linear-gradient(135deg, #00ff66, #00f0ff)", // Green -> Cyan
+        "linear-gradient(135deg, #ff007f, #8a2be2)", // Hot Pink -> Purple
+        "linear-gradient(135deg, #00f0ff, #39ff14)"  // Cyan -> Neon Green
+    ];
+
+    function playTransitionWhoosh() {
+        try {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            if (!AudioContext) return;
+            const audioCtx = new AudioContext();
+            
+            const bufferSize = audioCtx.sampleRate * 0.6; // 0.6s sweep
+            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const data = buffer.getChannelData(0);
+            
+            // Generate structural noise sweep
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = Math.random() * 2 - 1;
+            }
+            
+            const noise = audioCtx.createBufferSource();
+            noise.buffer = buffer;
+            
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = "lowpass";
+            filter.frequency.setValueAtTime(90, audioCtx.currentTime);
+            filter.frequency.exponentialRampToValueAtTime(1900, audioCtx.currentTime + 0.3);
+            filter.frequency.exponentialRampToValueAtTime(60, audioCtx.currentTime + 0.6);
+            
+            const gain = audioCtx.createGain();
+            gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
+            gain.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + 0.22);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.6);
+            
+            noise.connect(filter);
+            filter.connect(gain);
+            gain.connect(audioCtx.destination);
+            
+            noise.start();
+        } catch (e) {
+            console.warn("AudioContext trans-sound fallback failed:", e);
+        }
+    }
+
+    if (overlay) {
+        // Fetch last transitioned color coordinate
+        const currentGradIndex = parseInt(localStorage.getItem("scene_transition_grad_index") || "0");
+        overlay.style.background = gradients[currentGradIndex];
+
+        // Trigger entrance sweep off to the right
+        requestAnimationFrame(() => {
+            setTimeout(() => {
+                overlay.classList.add("entrance");
+            }, 30);
+        });
+
+        // Bind exit sweeps to all physical HTML anchors
+        document.querySelectorAll("a").forEach(link => {
+            const href = link.getAttribute("href");
+            // Only transition relative physical HTML file links
+            if (href && href.endsWith(".html") && !href.startsWith("http") && !href.startsWith("#")) {
+                link.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    
+                    // Increment and store next transition index
+                    const nextGradIndex = (currentGradIndex + 1) % gradients.length;
+                    localStorage.setItem("scene_transition_grad_index", nextGradIndex.toString());
+                    
+                    // Play sound
+                    playTransitionWhoosh();
+
+                    // Snap back to left instantly
+                    overlay.style.background = gradients[currentGradIndex];
+                    overlay.style.transition = "none";
+                    overlay.style.transform = "skewX(-20deg) translateX(-110%)";
+                    
+                    // Force GPU reflow repaint
+                    void overlay.offsetWidth;
+
+                    // Trigger hold swipe sweep covering the viewport
+                    overlay.classList.remove("entrance");
+                    overlay.classList.add("hold");
+
+                    // Physical navigation delay matching exit wipe transition
+                    setTimeout(() => {
+                        window.location.href = href;
+                    }, 480);
+                });
+            }
+        });
+    }
+
+    // ---------------------------------------------------------
     // 2. DOCUMENTATION INNER ROUTER
     // ---------------------------------------------------------
     const docLinks = document.querySelectorAll(".docs-nav-link");

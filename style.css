@@ -74,6 +74,35 @@
     100% { transform: translateY(100vh); }
 }
 
+/* =========================================================================
+   AAA SCENE TRANSITION WIPE OVERLAY (Godot-style)
+   ========================================================================= */
+.scene-transition-overlay {
+    position: fixed;
+    top: 0;
+    left: -50vw;
+    width: 200vw;
+    height: 100vh;
+    background: linear-gradient(135deg, #00f0ff, #ff007f);
+    z-index: 999999;
+    pointer-events: none;
+    transform: skewX(-20deg) translateX(0%); /* Starts fully covering the page */
+    box-shadow: 0 0 100px rgba(0, 240, 255, 0.45);
+    will-change: transform;
+}
+
+/* Exit Swipe: transitioning to covered state */
+.scene-transition-overlay.hold {
+    transform: skewX(-20deg) translateX(0%) !important;
+    transition: transform 0.5s cubic-bezier(0.85, 0, 0.15, 1) !important;
+}
+
+/* Entrance Swipe: sliding off to the right */
+.scene-transition-overlay.entrance {
+    transform: skewX(-20deg) translateX(110%) !important;
+    transition: transform 0.55s cubic-bezier(0.85, 0, 0.15, 1) !important;
+}
+
 /* Background Particle Canvas & AAA Cyber Grid Overlay */
 #particle-canvas {
     position: fixed;
