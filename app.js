@@ -4,56 +4,12 @@
 
 document.addEventListener("DOMContentLoaded", () => {
     // ---------------------------------------------------------
-    // 1. SINGLE PAGE APPLICATION (SPA) ROUTER
+    // 1. GLOBAL LAYOUT LOGIC (MOBILE MENU)
     // ---------------------------------------------------------
-    const sections = document.querySelectorAll(".page-section");
-    const navLinks = document.querySelectorAll(".nav-menu .nav-link");
     const mobileMenu = document.getElementById("menu-toggle");
     const navMenu = document.querySelector(".nav-menu");
 
-    function navigateToPage() {
-        // Read URL hash, defaulting to home page
-        let hash = window.location.hash || "#/home";
-        if (hash === "#" || hash === "") hash = "#/home";
-
-        // Convert #/home to home
-        const pageId = hash.replace("#/", "");
-        
-        let targetSection = document.getElementById(pageId);
-        if (!targetSection) {
-            // Revert to home if section not found
-            window.location.hash = "#/home";
-            return;
-        }
-
-        // Deactivate all sections and activate target page
-        sections.forEach(sec => sec.classList.remove("active"));
-        targetSection.classList.add("active");
-
-        // Update active class on nav links
-        navLinks.forEach(link => {
-            link.classList.remove("active");
-            if (link.getAttribute("href") === hash) {
-                link.classList.add("active");
-            }
-        });
-
-        // Close mobile menu if active
-        if (navMenu.classList.contains("active")) {
-            navMenu.classList.remove("active");
-            mobileMenu.classList.remove("open");
-        }
-
-        // Scroll gracefully back to top
-        window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-
-    // Connect hash router event hooks
-    window.addEventListener("hashchange", navigateToPage);
-    navigateToPage(); // Run initial routing on boot
-
-    // Mobile navigation toggle handler
-    if (mobileMenu) {
+    if (mobileMenu && navMenu) {
         mobileMenu.addEventListener("click", () => {
             navMenu.classList.toggle("active");
             mobileMenu.classList.toggle("open");
@@ -326,105 +282,108 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    window.addEventListener("keydown", (e) => {
-        // Prevent default actions for standard space, arrows to prevent scrolling
-        if (e.keyCode === 32 || (e.keyCode >= 37 && e.keyCode <= 40)) {
-            if (document.activeElement.tagName !== "INPUT" && document.activeElement.tagName !== "TEXTAREA") {
-                e.preventDefault();
+    // Only register keyboard event listeners if key slots actually exist on this page
+    if (keySlotElements.length > 0) {
+        window.addEventListener("keydown", (e) => {
+            // Prevent default actions for standard space, arrows to prevent scrolling
+            if (e.keyCode === 32 || (e.keyCode >= 37 && e.keyCode <= 40)) {
+                if (document.activeElement.tagName !== "INPUT" && document.activeElement.tagName !== "TEXTAREA") {
+                    e.preventDefault();
+                }
             }
-        }
 
-        const keyChar = getLaneKeyChar(e.keyCode);
-        if (!keyChar) return;
-
-        // Skip keys when typing in standard search inputs
-        if (document.activeElement.tagName === "INPUT" || document.activeElement.tagName === "TEXTAREA") {
-            return;
-        }
-
-        const index = keyLanesIndex.indexOf(keyChar);
-        if (index === -1) return;
-
-        // Trigger active virtual keys
-        activeLanesState[index] = true;
-        
-        const slotEl = keySlotElements[index];
-        if (slotEl) {
-            slotEl.classList.add("active");
-            if (keyChar === 'T' || keyChar === 'Y') {
-                slotEl.classList.add("active-magenta");
-            }
-        }
-
-        // Fire particle burst
-        spawnVisualizerBurst(index);
-
-        // Synthesize audio
-        playNote(keyChar);
-
-        if (synthStatus) {
-            synthStatus.textContent = `PLAYING NOTE: ${keyChar} (${Math.round(KEY_PITCHES[keyChar])}Hz)`;
-        }
-    });
-
-    window.addEventListener("keyup", (e) => {
-        const keyChar = getLaneKeyChar(e.keyCode);
-        if (!keyChar) return;
-
-        const index = keyLanesIndex.indexOf(keyChar);
-        if (index === -1) return;
-
-        activeLanesState[index] = false;
-
-        const slotEl = keySlotElements[index];
-        if (slotEl) {
-            slotEl.classList.remove("active");
-            slotEl.classList.remove("active-magenta");
-        }
-
-        stopNote(keyChar);
-
-        if (synthStatus) {
-            const hasActiveNotes = Object.keys(activeOscillators).length > 0;
-            if (!hasActiveNotes) {
-                synthStatus.textContent = "PRESS Q-W-E-R-T-Y-U-I-O-P ON YOUR KEYBOARD TO PLAY!";
-            }
-        }
-    });
-
-    // Web-click interactions for visual slots
-    keySlotElements.forEach(slot => {
-        const keyCode = parseInt(slot.getAttribute("data-key"));
-        const keyChar = getLaneKeyChar(keyCode);
-        const index = keyLanesIndex.indexOf(keyChar);
-
-        slot.addEventListener("mousedown", () => {
+            const keyChar = getLaneKeyChar(e.keyCode);
             if (!keyChar) return;
+
+            // Skip keys when typing in standard search inputs
+            if (document.activeElement.tagName === "INPUT" || document.activeElement.tagName === "TEXTAREA") {
+                return;
+            }
+
+            const index = keyLanesIndex.indexOf(keyChar);
+            if (index === -1) return;
+
+            // Trigger active virtual keys
             activeLanesState[index] = true;
-            slot.classList.add("active");
-            if (keyChar === 'T' || keyChar === 'Y') {
-                slot.classList.add("active-magenta");
+            
+            const slotEl = keySlotElements[index];
+            if (slotEl) {
+                slotEl.classList.add("active");
+                if (keyChar === 'T' || keyChar === 'Y') {
+                    slotEl.classList.add("active-magenta");
+                }
             }
+
+            // Fire particle burst
             spawnVisualizerBurst(index);
+
+            // Synthesize audio
             playNote(keyChar);
+
+            if (synthStatus) {
+                synthStatus.textContent = `PLAYING NOTE: ${keyChar} (${Math.round(KEY_PITCHES[keyChar])}Hz)`;
+            }
         });
 
-        slot.addEventListener("mouseup", () => {
+        window.addEventListener("keyup", (e) => {
+            const keyChar = getLaneKeyChar(e.keyCode);
             if (!keyChar) return;
+
+            const index = keyLanesIndex.indexOf(keyChar);
+            if (index === -1) return;
+
             activeLanesState[index] = false;
-            slot.classList.remove("active");
-            slot.classList.remove("active-magenta");
+
+            const slotEl = keySlotElements[index];
+            if (slotEl) {
+                slotEl.classList.remove("active");
+                slotEl.classList.remove("active-magenta");
+            }
+
             stopNote(keyChar);
+
+            if (synthStatus) {
+                const hasActiveNotes = Object.keys(activeOscillators).length > 0;
+                if (!hasActiveNotes) {
+                    synthStatus.textContent = "PRESS Q-W-E-R-T-Y-U-I-O-P ON YOUR KEYBOARD TO PLAY!";
+                }
+            }
         });
 
-        slot.addEventListener("mouseleave", () => {
-            if (!keyChar) return;
-            activeLanesState[index] = false;
-            slot.classList.remove("active");
-            slot.classList.remove("active-magenta");
-            stopNote(keyChar);
+        // Web-click interactions for visual slots
+        keySlotElements.forEach(slot => {
+            const keyCode = parseInt(slot.getAttribute("data-key"));
+            const keyChar = getLaneKeyChar(keyCode);
+            const index = keyLanesIndex.indexOf(keyChar);
+
+            slot.addEventListener("mousedown", () => {
+                if (!keyChar) return;
+                activeLanesState[index] = true;
+                slot.classList.add("active");
+                if (keyChar === 'T' || keyChar === 'Y') {
+                    slot.classList.add("active-magenta");
+                }
+                spawnVisualizerBurst(index);
+                playNote(keyChar);
+            });
+
+            slot.addEventListener("mouseup", () => {
+                if (!keyChar) return;
+                activeLanesState[index] = false;
+                slot.classList.remove("active");
+                slot.classList.remove("active-magenta");
+                stopNote(keyChar);
+            });
+
+            slot.addEventListener("mouseleave", () => {
+                if (!keyChar) return;
+                activeLanesState[index] = false;
+                slot.classList.remove("active");
+                slot.classList.remove("active-magenta");
+                stopNote(keyChar);
+            });
         });
-    });
+    }
 
     // ---------------------------------------------------------
     // 6. DYNAMIC COMMUNITY LEVEL & LEADERBOARD GRID RENDER
