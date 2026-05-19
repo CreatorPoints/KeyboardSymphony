@@ -609,7 +609,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtoa2hzeG1mZHBsdnZham9scXlnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg5MjA4MjEsImV4cCI6MjA5NDQ5NjgyMX0.-eo-E06FwWYiJr5n_U7ARmYSxKnLuBAB7TsVsWAH7_U";
 
     let playersData = [];
-    let currentCategory = "xp";
+    let currentCategory = "pid";
     let filterQuery = "";
 
     function getSyncTimeString() {
@@ -646,9 +646,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Sort by selected category
         filtered.sort((a, b) => {
-            if (currentCategory === "joined_at") {
-                // Ascending for joined date (oldest pioneers first!)
-                return (a.joined_at || 0) - (b.joined_at || 0);
+            if (currentCategory === "joined_at" || currentCategory === "pid") {
+                // Ascending for PID or joined date (lowest PID/registration order and oldest pioneers first!)
+                return (a[currentCategory] || 0) - (b[currentCategory] || 0);
             } else {
                 // Descending for numerical progression metrics
                 return (b[currentCategory] || 0) - (a[currentCategory] || 0);
@@ -723,7 +723,19 @@ document.addEventListener("DOMContentLoaded", () => {
             syncText.textContent = "Checking live sync updates...";
         }
 
-        const cachedPlayers = localStorage.getItem("leaderboard_cached_players");
+        let cachedPlayers = localStorage.getItem("leaderboard_cached_players");
+        // Auto-bust old cache structure if pid is missing to ensure smooth migration
+        if (cachedPlayers) {
+            try {
+                const parsed = JSON.parse(cachedPlayers);
+                if (parsed.length > 0 && parsed[0].pid === undefined) {
+                    cachedPlayers = null;
+                    localStorage.removeItem("leaderboard_cached_players");
+                }
+            } catch (e) {
+                cachedPlayers = null;
+            }
+        }
         const cachedTimestamp = localStorage.getItem("leaderboard_cached_timestamp");
         const cachedSyncDate = localStorage.getItem("leaderboard_cached_sync_date");
 
@@ -755,7 +767,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // Step 3: Drift / Cache-Miss Case: Perform a full data fetch
             if (syncText) syncText.textContent = "Pulling real-time updates...";
 
-            const fullDataUrl = `${supabaseUrl}/rest/v1/player_stats?select=id,xp,currency,stars,levels_completed,rank,joined_at,display_name,avatar_url`;
+            const fullDataUrl = `${supabaseUrl}/rest/v1/player_stats?select=id,xp,currency,stars,levels_completed,rank,joined_at,display_name,avatar_url,pid`;
             const fullResponse = await fetch(fullDataUrl, { headers });
             if (!fullResponse.ok) throw new Error("Leaderboard full pull failed");
 
