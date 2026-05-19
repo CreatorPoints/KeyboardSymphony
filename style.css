@@ -1235,6 +1235,42 @@ body {
     margin-right: 6px;
 }
 
+/* High-tech Wiki Table */
+.wiki-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    font-size: 0.85rem;
+    background: rgba(255, 255, 255, 0.01);
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1.5px solid rgba(255, 255, 255, 0.04);
+}
+
+.wiki-table th, .wiki-table td {
+    padding: 14px 18px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.wiki-table th {
+    background: rgba(0, 240, 255, 0.04);
+    color: var(--neon-cyan);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    border-bottom: 1.5px solid rgba(0, 240, 255, 0.15);
+}
+
+.wiki-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.wiki-table td strong {
+    color: #ffffff;
+}
+
 /* Inline keyboard visualizer key */
 .kb-visualizer-container {
     background: #030306;
