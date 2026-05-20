@@ -1730,7 +1730,7 @@ body {
     100% { transform: rotate(360deg); }
 }
 
-/* Responsive Table */
+/* Responsive Table & Card Layout */
 @media (max-width: 1024px) {
     .col-joined { display: none; }
     .col-levels { display: none; }
@@ -1745,6 +1745,100 @@ body {
     .leaderboard-header-section {
         flex-direction: column;
         align-items: flex-start;
+    }
+}
+
+@media (max-width: 680px) {
+    .leaderboard-table-header {
+        display: none !important; /* Hide headers on mobile */
+    }
+    
+    .leaderboard-container {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+    
+    .leaderboard-list {
+        gap: 16px;
+        padding: 8px 0;
+    }
+    
+    .player-row {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 14px 10px !important;
+        padding: 20px !important;
+        background: var(--bg-glass-heavy) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.04) !important;
+        border-radius: 14px !important;
+        position: relative !important;
+        margin: 0 !important;
+        box-shadow: var(--shadow-premium) !important;
+        transition: var(--transition-smooth) !important;
+    }
+    
+    .player-row::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        padding: 1px;
+        background: linear-gradient(135deg, rgba(0, 240, 255, 0.12) 0%, rgba(255, 0, 127, 0.06) 50%, transparent 100%);
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
+    }
+    
+    .player-row:hover {
+        transform: translateY(-2px);
+        border-color: rgba(255, 255, 255, 0.08) !important;
+        background: rgba(12, 12, 24, 0.85) !important;
+    }
+    
+    /* Floating rank badge */
+    .col-rank {
+        grid-column: 1 / -1 !important;
+        width: auto !important;
+        position: absolute !important;
+        top: 20px !important;
+        right: 20px !important;
+        font-size: 1.1rem !important;
+        z-index: 5;
+    }
+    
+    /* Player header block within card */
+    .col-player {
+        grid-column: 1 / -1 !important;
+        width: 100% !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+        padding-bottom: 12px !important;
+        margin-bottom: 4px !important;
+    }
+    
+    /* Force stats columns to display on mobile cards */
+    .col-tier, .col-xp, .col-stars, .col-coins, .col-levels, .col-joined {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        width: 100% !important;
+        gap: 4px !important;
+    }
+    
+    /* Labels for card stats */
+    .col-tier::before { content: "RANK TIER"; font-size: 0.65rem; font-family: 'JetBrains Mono', monospace; color: var(--text-muted); font-weight: 700; letter-spacing: 0.05em; }
+    .col-xp::before { content: "XP ACCUMULATED"; font-size: 0.65rem; font-family: 'JetBrains Mono', monospace; color: var(--text-muted); font-weight: 700; letter-spacing: 0.05em; }
+    .col-stars::before { content: "STARS COLLECTED"; font-size: 0.65rem; font-family: 'JetBrains Mono', monospace; color: var(--text-muted); font-weight: 700; letter-spacing: 0.05em; }
+    .col-coins::before { content: "COINS"; font-size: 0.65rem; font-family: 'JetBrains Mono', monospace; color: var(--text-muted); font-weight: 700; letter-spacing: 0.05em; }
+    .col-levels::before { content: "LEVELS COMPLETED"; font-size: 0.65rem; font-family: 'JetBrains Mono', monospace; color: var(--text-muted); font-weight: 700; letter-spacing: 0.05em; }
+    .col-joined::before { content: "JOINED DATE"; font-size: 0.65rem; font-family: 'JetBrains Mono', monospace; color: var(--text-muted); font-weight: 700; letter-spacing: 0.05em; }
+
+    .sync-status-bar {
+        width: 100%;
+        justify-content: space-between;
     }
 }
 
