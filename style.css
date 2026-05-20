@@ -125,14 +125,17 @@
     z-index: -2;
     pointer-events: none;
     background-image: 
-        linear-gradient(rgba(0, 240, 255, 0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 240, 255, 0.02) 1px, transparent 1px);
+        linear-gradient(rgba(0, 240, 255, 0.16) 1.5px, transparent 1.5px),
+        linear-gradient(90deg, rgba(0, 240, 255, 0.16) 1.5px, transparent 1.5px);
     background-size: 60px 60px;
     background-position: center center;
     transform: perspective(600px) rotateX(45deg);
     transform-origin: top center;
-    opacity: 0.75;
+    opacity: 0.9;
     animation: grid-scroll 24s linear infinite;
+    /* Premium depth fade: makes the grid fade beautifully as it recedes towards the horizon */
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.25) 100%);
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.25) 100%);
 }
 
 @keyframes grid-scroll {
