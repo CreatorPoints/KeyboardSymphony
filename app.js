@@ -639,7 +639,8 @@ document.addEventListener("DOMContentLoaded", () => {
         // Clone and filter
         let filtered = playersData.filter(p => {
             const name = (p.display_name || "Player").toLowerCase();
-            const rank = (p.rank || "Player").toLowerCase();
+            const rankVal = Array.isArray(p.rank) ? p.rank.join(" ") : (p.rank || "Player");
+            const rank = String(rankVal).toLowerCase();
             const query = filterQuery.toLowerCase();
             return name.includes(query) || rank.includes(query);
         });
@@ -691,7 +692,12 @@ document.addEventListener("DOMContentLoaded", () => {
             const coinsVal = `<span class="stat-coins-val ${currentCategory === 'currency' ? 'text-green' : ''}">$ ${formatNumber(player.currency || 0)}</span>`;
             const levelsVal = `<span class="stat-levels-val ${currentCategory === 'levels_completed' ? 'text-magenta' : ''}">${formatNumber(player.levels_completed || 0)}</span>`;
             
-            const tierBadge = `<span class="tier-badge ${player.rank.toLowerCase()}">${player.rank}</span>`;
+            let tierBadge = "";
+            const ranks = Array.isArray(player.rank) ? player.rank : [player.rank || "Player"];
+            ranks.forEach(r => {
+                const cleanRank = String(r || "Player").trim();
+                tierBadge += `<span class="tier-badge ${cleanRank.toLowerCase()}" style="margin-right: 4px; margin-bottom: 4px;">${cleanRank}</span>`;
+            });
             const joinedDate = formatDate(player.joined_at);
  
             const rowHTML = `
