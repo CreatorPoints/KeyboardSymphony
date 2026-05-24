@@ -12,9 +12,12 @@
     <link rel="stylesheet" href="style.css">
     <!-- Mermaid.js for beautiful professional flowcharts loaded via modern ESM -->
     <script type="module">
+        console.log("🚀 MERMAID ENGINE LOADING...");
         import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        console.log("✅ MERMAID ESM IMPORT SUCCESSFUL:", mermaid);
+
         mermaid.initialize({
-            startOnLoad: true,
+            startOnLoad: false,
             theme: 'dark',
             themeVariables: {
                 primaryColor: '#00f0ff',
@@ -23,6 +26,16 @@
                 textColor: '#fff',
                 mainBkg: '#06060c',
                 nodeBorder: '#00f0ff'
+            }
+        });
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            console.log("DOM LOADED, INITIATING MANUAL MERMAID COMPILE RUN...");
+            try {
+                await mermaid.run();
+                console.log("🎉 MERMAID GRAPH RENDERING COMPLETE!");
+            } catch (error) {
+                console.error("❌ MERMAID RUN FAILURE:", error);
             }
         });
     </script>
@@ -166,15 +179,8 @@
 
                         <h3>Judgment Decision Flowchart</h3>
                         <div class="mermaid">
-flowchart TD
-    A[Incoming Notes] -- Approach Lane --> B[Hit Line]
-    B -- Strike / Release --> C{Asymmetric Judgement}
-    C -- Perfect: -25ms to +15ms --> D[Pure Perfect - 100% Score]
-    C -- Early Good: -95ms to -25ms --> E[Early Perfect - 80% Score]
-    C -- Late Good: +15ms to +30ms --> F[Late Perfect - 80% Score]
-    C -- Early Bad: -140ms to -95ms --> G[Early - 50% Score]
-    C -- Late Bad: +30ms to +45ms --> H[Late - 50% Score]
-    C -- Out of bounds / Ignore --> I[Miss - Instant Auto-Miss at +45ms]
+graph TD;
+A-->B;
                         </div>
                         <h3>The Asymmetric Judgement System</h3>
                         <p>To accommodate natural human motor speed profiles—where physical anticipation commonly triggers early clicks, whereas late keypress dragging represents sluggish reaction speeds and is heavily penalized—the rhythm engine implements highly responsive, **Asymmetric Hit Windows**:</p>
