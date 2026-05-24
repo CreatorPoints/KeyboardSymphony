@@ -168,15 +168,15 @@
 
                         <h3>Judgment Decision Flowchart</h3>
                         <div class="mermaid">
-                            graph TD
-                                A[Incoming Notes] -->|Approach Lane| B[Hit Line]
-                                B -->|Strike / Release| C{Asymmetric Judgement}
-                                C -->|Perfect: -25ms to +15ms| D[Pure Perfect - 100% Score]
-                                C -->|Early Good: -95ms to -25ms| E[Early Perfect - 80% Score]
-                                C -->|Late Good: +15ms to +30ms| F[Late Perfect - 80% Score]
-                                C -->|Early Bad: -140ms to -95ms| G[Early - 50% Score]
-                                C -->|Late Bad: +30ms to +45ms| H[Late - 50% Score]
-                                C -->|Out of bounds / Ignore| I[Miss - Instant Auto-Miss at +45ms]
+graph TD
+    A["Incoming Notes"] -->|"Approach Lane"| B["Hit Line"]
+    B -->|"Strike / Release"| C{"Asymmetric Judgement"}
+    C -->|"Perfect: -25ms to +15ms"| D["Pure Perfect - 100% Score"]
+    C -->|"Early Good: -95ms to -25ms"| E["Early Perfect - 80% Score"]
+    C -->|"Late Good: +15ms to +30ms"| F["Late Perfect - 80% Score"]
+    C -->|"Early Bad: -140ms to -95ms"| G["Early - 50% Score"]
+    C -->|"Late Bad: +30ms to +45ms"| H["Late - 50% Score"]
+    C -->|"Out of bounds / Ignore"| I["Miss - Instant Auto-Miss at +45ms"]
                         </div>
 
                         <h3>The Asymmetric Judgement System</h3>
