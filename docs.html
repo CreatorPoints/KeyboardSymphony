@@ -29,14 +29,41 @@
             }
         });
 
+        // Dynamic lazy rendering controller to avoid display: none collapses
         window.addEventListener('DOMContentLoaded', async () => {
-            console.log("DOM LOADED, INITIATING MANUAL MERMAID COMPILE RUN...");
-            try {
-                await mermaid.run();
-                console.log("🎉 MERMAID GRAPH RENDERING COMPLETE!");
-            } catch (error) {
-                console.error("❌ MERMAID RUN FAILURE:", error);
-            }
+            console.log("DOM LOADED, SETTING UP LAZY-RENDER MERMAID HANDLERS...");
+
+            // Helper to compile diagrams inside the visible active article
+            const compileActiveTabDiagrams = async () => {
+                const activeArt = document.querySelector('.doc-article.active');
+                if (activeArt) {
+                    const diagrams = activeArt.querySelectorAll('.mermaid');
+                    const uncompiled = Array.from(diagrams).filter(el => !el.hasAttribute('data-processed'));
+                    if (uncompiled.length > 0) {
+                        try {
+                            console.log(`Lazy-compiling ${uncompiled.length} diagrams inside active tab #${activeArt.id}...`);
+                            await mermaid.run({ nodes: uncompiled });
+                            console.log("🎉 TAB MERMAID COMPILE SUCCESS!");
+                        } catch (error) {
+                            console.error("❌ TAB MERMAID RUN FAILURE:", error);
+                        }
+                    }
+                }
+            };
+
+            // Compile the initial visible tab (e.g. Getting Started / doc-intro)
+            await compileActiveTabDiagrams();
+
+            // Bind compilation triggers to documentation navigation tab clicks
+            const navLinks = document.querySelectorAll('.docs-nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    // Small delay to ensure the tab-switching app.js script toggles classes first
+                    setTimeout(async () => {
+                        await compileActiveTabDiagrams();
+                    }, 50);
+                });
+            });
         });
     </script>
 </head>
@@ -179,8 +206,15 @@
 
                         <h3>Judgment Decision Flowchart</h3>
                         <div class="mermaid">
-graph TD;
-A-->B;
+flowchart TD
+    A[Incoming Notes] -- Approach Lane --> B[Hit Line]
+    B -- Strike / Release --> C{Asymmetric Judgement}
+    C -- Perfect: -25ms to +15ms --> D[Pure Perfect - 100% Score]
+    C -- Early Good: -95ms to -25ms --> E[Early Perfect - 80% Score]
+    C -- Late Good: +15ms to +30ms --> F[Late Perfect - 80% Score]
+    C -- Early Bad: -140ms to -95ms --> G[Early - 50% Score]
+    C -- Late Bad: +30ms to +45ms --> H[Late - 50% Score]
+    C -- Out of bounds / Ignore --> I[Miss - Instant Auto-Miss at +45ms]
                         </div>
                         <h3>The Asymmetric Judgement System</h3>
                         <p>To accommodate natural human motor speed profiles—where physical anticipation commonly triggers early clicks, whereas late keypress dragging represents sluggish reaction speeds and is heavily penalized—the rhythm engine implements highly responsive, **Asymmetric Hit Windows**:</p>
