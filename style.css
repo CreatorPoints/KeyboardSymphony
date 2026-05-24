@@ -1851,3 +1851,23 @@ body {
     }
 }
 
+/* Mermaid Flowchart Responsive Design & Premium Glass Styling */
+.mermaid {
+    background: rgba(4, 4, 8, 0.5) !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.04) !important;
+    border-radius: 12px;
+    padding: 24px;
+    margin: 24px 0;
+    display: flex;
+    justify-content: center;
+    overflow-x: auto;
+    box-shadow: var(--shadow-premium);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.mermaid svg {
+    max-width: 100% !important;
+    height: auto !important;
+}
+

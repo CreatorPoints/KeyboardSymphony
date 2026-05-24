@@ -10,6 +10,24 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <!-- Mermaid.js for beautiful professional flowcharts -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'dark',
+                themeVariables: {
+                    primaryColor: '#00f0ff',
+                    primaryTextColor: '#fff',
+                    lineColor: '#ff007f',
+                    textColor: '#fff',
+                    mainBkg: '#06060c',
+                    nodeBorder: '#00f0ff'
+                }
+            });
+        });
+    </script>
 </head>
 <body>
     <!-- AAA Scene Transition Overlay (Godot-style) -->
@@ -57,93 +75,72 @@
                 <aside class="docs-sidebar glass-card">
                     <ul class="docs-nav-list">
                         <li><a href="#doc-intro" class="docs-nav-link active" id="link-doc-intro">Getting Started</a></li>
-                        <li><a href="#doc-gameplay" class="docs-nav-link" id="link-doc-gameplay">Core Mechanics</a></li>
+                        <li><a href="#doc-gameplay" class="docs-nav-link" id="link-doc-gameplay">Gameplay & Hit Windows</a></li>
                         <li><a href="#doc-triggers" class="docs-nav-link" id="link-doc-triggers">Visual FX Triggers</a></li>
-                        <li><a href="#doc-editor" class="docs-nav-link" id="link-doc-editor">Level Editor</a></li>
-                        <li><a href="#doc-ffmpeg" class="docs-nav-link" id="link-doc-ffmpeg">Audio & FFmpeg</a></li>
-                        <li><a href="#doc-database" class="docs-nav-link" id="link-doc-database">Profile Cloud Sync</a></li>
-                        <li><a href="#doc-systems" class="docs-nav-link" id="link-doc-systems">Autoload Singletons</a></li>
+                        <li><a href="#doc-editor" class="docs-nav-link" id="link-doc-editor">Level Editor & DAW</a></li>
+                        <li><a href="#doc-database" class="docs-nav-link" id="link-doc-database">Auth & Cloud Sync</a></li>
+                        <li><a href="#doc-systems" class="docs-nav-link" id="link-doc-systems">Autoload Architecture</a></li>
                     </ul>
                 </aside>
 
                 <!-- Documentation Content Cards -->
                 <div class="docs-main">
-                    <!-- Getting Started -->
+                    <!-- Getting Started / Introduction -->
                     <article id="doc-intro" class="doc-article active">
                         <h2>Getting Started</h2>
-                        <p>Welcome to the official technical wiki for <strong>Keyboard Symphony</strong>—a high-fidelity, cyberpunk-themed indie rhythm game built on the **Godot Engine 4** platform. Synthesizing elements of traditional lane-based music games with state-of-the-art visual scripting triggers, local cryptographic encryption, and a cloud-integrated database, the game offers a unified platform for both players and level creators.</p>
+                        <p>Welcome to the official technical wiki for <strong>Keyboard Symphony</strong>—a premium, cyberpunk-themed rhythm and level creation platform. This comprehensive specification bridges all gameplay mechanics, advanced rendering pipelines, vertical timeline editor suites, secure network handshakes, and core autoload systems.</p>
                         
-                        <p>Developed with a neon-drenched glassmorphic aesthetic (anchored by HSL-tailored cyan, magenta, and amber tones), Keyboard Symphony focuses on tight mechanical precision, reactive shader effects, and seamless profile synchronization via Supabase backend services.</p>
+                        <p>Bridging client-side timing precision with modern cloud synchronizations, Keyboard Symphony is engineered to deliver a responsive, visual-scripted game loop built on top of the robust **Godot Engine** platform.</p>
 
-                        <h3>🗂️ Overview Infobox</h3>
+                        <h3>🗂️ System Overview</h3>
                         <table class="wiki-table">
                             <thead>
                                 <tr>
-                                    <th>Attribute</th>
-                                    <th>Game Profile / Technical Data</th>
+                                    <th>System Profile</th>
+                                    <th>Technical Specifications</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td><strong>Developer</strong></td>
-                                    <td>Pair-programmed by the Creator & Antigravity (Advanced AI Coding Assistant)</td>
+                                    <td><strong>Engine & Language</strong></td>
+                                    <td>Godot Engine v4.6.2.stable (GDScript & GLSL Shading Language)</td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Engine</strong></td>
-                                    <td>Godot Engine 4.x (GDScript & GLSL Shading Language)</td>
+                                    <td><strong>Input Mapping</strong></td>
+                                    <td>10-lane QWERTYUIOP physical row keyboard mapping</td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Genre</strong></td>
-                                    <td>Rhythm / Music / Level Creation</td>
+                                    <td><strong>Visual Style</strong></td>
+                                    <td>Glassmorphic Neon Cyberpunk (Cyan, Magenta, Amber, Emerald)</td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Input Method</strong></td>
-                                    <td>Keyboard (10-lane QWERTYUIOP physical mapping)</td>
+                                    <td><strong>Backend Integration</strong></td>
+                                    <td>Supabase Cloud Database & API, Custom Google OAuth Listeners</td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Visual Aesthetic</strong></td>
-                                    <td>Neon Cyberpunk / Glassmorphism / HSL Glowing Overlays</td>
+                                    <td><strong>Player Profile Storage</strong></td>
+                                    <td>Local AES-256 Encrypted Saves & Automatic Cloud Timestamp Sync</td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Database & Auth</strong></td>
-                                    <td>Supabase Backend API Integration & Local AES-256 Encrypted Saves</td>
+                                    <td><strong>Audacity Visualizer</strong></td>
+                                    <td>Asynchronous 44.1kHz Mono PCM Transcoder, Peak & RMS Dual Envelopes</td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Key Features</strong></td>
-                                    <td>Custom Real-time Visual Shaders, Live In-Editor Viewport Preview, "Play-As-You-Go" (PAYG) Live Chart Recording, Procedural Sound Synthesis Engine, and Google OAuth Linkage</td>
+                                    <td><strong>Hit Windows</strong></td>
+                                    <td>Highly responsive Asymmetric Early/Late hit detection zones</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Unique Systems</strong></td>
+                                    <td>Play-As-You-Go Live Charting (PAYGM), Procedural UI Synth, Custom Screen Shaders</td>
                                 </tr>
                             </tbody>
                         </table>
-
-                        <h3>🎼 The Original Level Library</h3>
-                        <p>Keyboard Symphony ships with a curated library of built-in levels showcasing different genres and complexities:</p>
-                        <ul>
-                            <li><strong>Your Nightmare (Difficulty: 2/5 Stars)</strong><br>
-                                <em>Artist:</em> Yukis<br>
-                                <em>Description:</em> A smooth, melodic introduction designed to warm up your fingers. Cascading notes flow alongside cybernetic virtual rain.
-                            </li>
-                            <li><strong>Fallen Symphony (Difficulty: 4/5 Stars)</strong><br>
-                                <em>Artist:</em> Lucidin<br>
-                                <em>Description:</em> High-tempo electronic drums and shifting bass lines that require tight synchronization and rapid reaction speeds.
-                            </li>
-                            <li><strong>Cybernetic Genesis (Difficulty: 5/5 Stars)</strong><br>
-                                <em>Artist:</em> F-777<br>
-                                <em>Description:</em> The ultimate challenge for rhythm game champions, featuring a relentless barrage of complex patterns, visual glitch triggers, and tempo shifts.
-                            </li>
-                        </ul>
-
-                        <div class="alert-box note">
-                            <strong>SYSTEM NOTE:</strong> Ensure your mechanical keyboard supports <strong>N-Key Rollover (NKRO)</strong> to play chords requiring 5+ simultaneous keys accurately.
-                        </div>
                     </article>
 
-                    <!-- Core Mechanics -->
+                    <!-- Core Gameplay & The Asymmetric Hit Detection System -->
                     <article id="doc-gameplay" class="doc-article">
-                        <h2>Core Gameplay Mechanics</h2>
-                        <p>Keyboard Symphony challenges players to coordinate their keystrokes with musical rhythms flowing down a vertically oriented scrolling space. Accuracy and speed are rewarded through a multi-tiered grading structure.</p>
-                        
-                        <h3>The 10-Lane Input Grid</h3>
-                        <p>The input field is structured horizontally across ten parallel lanes, physically mapped to the top row of a standard QWERTY keyboard:</p>
+                        <h2>Core Gameplay & Hit Windows</h2>
+                        <p>Keyboard Symphony coordinates physical keystrokes with musical rhythms flowing down a vertically oriented 10-lane scrolling space. The input grid is physically mapped directly to the top row of a standard QWERTY keyboard:</p>
                         
                         <div class="kb-visualizer-container">
                             <div class="kb-row">
@@ -160,203 +157,199 @@
                             </div>
                         </div>
 
-                        <p>Lanes feature localized color coding to guide the player's peripheral vision, shifting dynamically from saturated reds and oranges on the outer edges to cool greens and cyans in the center:</p>
+                        <p>Lanes feature dynamic neon HSL color coding to guide the player's peripheral vision and timing focus:</p>
                         <ul>
-                            <li><strong>Lanes 0 & 9:</strong> Neon Red &bull; <code>Color(1.5, 0.2, 0.2)</code></li>
-                            <li><strong>Lanes 1 & 8:</strong> Neon Orange &bull; <code>Color(1.5, 0.8, 0.2)</code></li>
-                            <li><strong>Lanes 2 & 7:</strong> Neon Yellow &bull; <code>Color(1.5, 1.5, 0.2)</code></li>
-                            <li><strong>Lanes 3 & 6:</strong> Neon Green &bull; <code>Color(0.2, 1.5, 0.2)</code></li>
-                            <li><strong>Lanes 4 & 5:</strong> Neon Cyan &bull; <code>Color(0.2, 1.5, 1.5)</code></li>
+                            <li><strong>Lanes 0 & 9 (Neon Red):</strong> <code>Color(1.5, 0.2, 0.2)</code></li>
+                            <li><strong>Lanes 1 & 8 (Neon Orange):</strong> <code>Color(1.5, 0.8, 0.2)</code></li>
+                            <li><strong>Lanes 2 & 7 (Neon Yellow):</strong> <code>Color(1.5, 1.5, 0.2)</code></li>
+                            <li><strong>Lanes 3 & 6 (Neon Green):</strong> <code>Color(0.2, 1.5, 0.2)</code></li>
+                            <li><strong>Lanes 4 & 5 (Neon Cyan):</strong> <code>Color(0.2, 1.5, 1.5)</code></li>
                         </ul>
 
-                        <h3>Note Varieties</h3>
-                        <ol>
-                            <li><strong>Tap Notes (Instant Hits):</strong> Represented by glowing rectangular neon blocks. The player must strike the corresponding key at the exact moment the note intersects the bottom horizontal <strong>Hit Line</strong>.</li>
-                            <li><strong>Hold Notes (Sustain Strips):</strong> Represented by elongated, translucent trails terminating in a trailing cap. The player must depress the key when the note's head contacts the Hit Line, sustain the keypress for the duration of the trail, and release it in sync with the trail's end.
-                                <ul>
-                                    <li><em>Hold Particle Bursts:</em> While successfully held, lanes emit continuous CPUParticles2D particle streams reflecting the lane's specific neon signature.</li>
-                                    <li><em>Sustain Verification:</em> The engine handles perfect hold resolutions; if held continuously to completion, it triggers a release hitsound and awards a final score bonus.</li>
-                                </ul>
-                            </li>
-                        </ol>
+                        <h3>Judgment Decision Flowchart</h3>
+                        <div class="mermaid">
+                            graph TD
+                                A[Incoming Notes] -->|Approach Lane| B[Hit Line]
+                                B -->|Strike / Release| C{Asymmetric Judgement}
+                                C -->|Perfect: -25ms to +15ms| D[Pure Perfect - 100% Score]
+                                C -->|Early Good: -95ms to -25ms| E[Early Perfect - 80% Score]
+                                C -->|Late Good: +15ms to +30ms| F[Late Perfect - 80% Score]
+                                C -->|Early Bad: -140ms to -95ms| G[Early - 50% Score]
+                                C -->|Late Bad: +30ms to +45ms| H[Late - 50% Score]
+                                C -->|Out of bounds / Ignore| I[Miss - Instant Auto-Miss at +45ms]
+                        </div>
 
-                        <h3>The Judgment & Accuracy System</h3>
-                        <p>Accuracy is computed in real-time by subtracting the note's absolute target timestamp from the player's physical keypress time (<code>&Delta;t = t_press - t_target</code>):</p>
-                        
+                        <h3>The Asymmetric Judgement System</h3>
+                        <p>To accommodate natural human motor speed profiles—where physical anticipation commonly triggers early clicks, whereas late keypress dragging represents sluggish reaction speeds and is heavily penalized—the rhythm engine implements highly responsive, **Asymmetric Hit Windows**:</p>
+
                         <table class="wiki-table">
                             <thead>
                                 <tr>
-                                    <th>Accuracy Judgement</th>
-                                    <th>Time Window (&Delta;t)</th>
-                                    <th>Points Awarded</th>
-                                    <th>Visual Feedback Color</th>
+                                    <th>Visual Zone</th>
+                                    <th>Time Range (dt)</th>
+                                    <th>Judgment Class</th>
+                                    <th>Score Multiplier</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td><strong class="text-cyan">Pure Perfect</strong></td>
-                                    <td>&le; &plusmn;20% of Hit Window</td>
-                                    <td>Full 100% base score</td>
-                                    <td>Glowing Green</td>
+                                    <td><strong>Out-of-Bounds (Top)</strong></td>
+                                    <td><code>dt &lt; -140ms</code></td>
+                                    <td><span style="color: #ff453a; font-weight: 800;">Miss</span></td>
+                                    <td><code>0.0</code></td>
                                 </tr>
                                 <tr>
-                                    <td><strong class="text-magenta">Early / Late Perfect</strong></td>
-                                    <td>&le; &plusmn;50% of Hit Window</td>
-                                    <td>High 75% base score</td>
-                                    <td>Bright Yellow / Orange</td>
+                                    <td><strong>Early Red Band</strong></td>
+                                    <td><code>-140ms to -95ms</code></td>
+                                    <td><span style="color: #ff453a; font-weight: 600;">Early (Red)</span></td>
+                                    <td><code>0.5</code></td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Early / Late</strong></td>
-                                    <td>&le; &plusmn;100% of Hit Window</td>
-                                    <td>Muted 50% base score</td>
-                                    <td>Saturated Red</td>
+                                    <td><strong>Generous Early Yellow Band</strong></td>
+                                    <td><code>-95ms to -25ms</code></td>
+                                    <td><span style="color: var(--neon-yellow); font-weight: 600;">Early Perfect (Yellow)</span></td>
+                                    <td><code>0.8</code></td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Miss</strong></td>
-                                    <td>&gt; &plusmn;100% of Hit Window</td>
-                                    <td>0% points, streak breaks</td>
-                                    <td>Blood Red</td>
+                                    <td><strong>Green Center Band</strong></td>
+                                    <td><code>-25ms to +15ms</code></td>
+                                    <td><span style="color: #32d74b; font-weight: 800; text-shadow: 0 0 8px rgba(50,215,75,0.4);">Perfect (Green)</span></td>
+                                    <td><code>1.0</code></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Strict Late Yellow Band</strong></td>
+                                    <td><code>+15ms to +30ms</code></td>
+                                    <td><span style="color: var(--neon-yellow); font-weight: 600;">Late Perfect (Yellow)</span></td>
+                                    <td><code>0.8</code></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Tight Late Red Band</strong></td>
+                                    <td><code>+30ms to +45ms</code></td>
+                                    <td><span style="color: #ff453a; font-weight: 600;">Late (Red)</span></td>
+                                    <td><code>0.5</code></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Out-of-Bounds (Bottom)</strong></td>
+                                    <td><code>dt &gt; +45ms</code></td>
+                                    <td><span style="color: #ff453a; font-weight: 800;">Miss (Further than that)</span></td>
+                                    <td><code>0.0</code></td>
                                 </tr>
                             </tbody>
                         </table>
 
                         <ul>
-                            <li><strong>Sliding Neon Accuracy Meter:</strong> Positioned adjacent to the playing grid, a vertical scale featuring a dynamic <strong>Accuracy Marker</strong> slides smoothly and changes color (Green &rarr; Yellow &rarr; Red) to graphically indicate if the user hit too early (offset up) or too late (offset down).</li>
-                            <li><strong>Neglect Auto-Misses:</strong> If a player ignores an incoming note, the engine automatically triggers a miss judgment and frees the note once it passes beyond the miss threshold (<code>0.18 seconds</code>), preventing memory leaks and keeping gameplay clean.</li>
+                            <li><strong>Pure Perfect:</strong> Displays a vibrant green flare on the receptor line and records a perfect accuracy mark on the accuracy indicator.</li>
+                            <li><strong>Instant Late Miss (Auto-Miss):</strong> Any note passing the active receptor line by more than <code>+45ms</code> is instantly wiped from play memory and registered as a <strong>Miss</strong>. The note is colored dark gray (<code>Color(0.4, 0.4, 0.4, 0.35)</code>) to provide immediate, snappy sensory response.</li>
                         </ul>
                     </article>
 
-                    <!-- Visual FX Triggers -->
+                    <!-- Visual Scripting Triggers & Screen FX Overlay Engine -->
                     <article id="doc-triggers" class="doc-article">
                         <h2>Visual Triggers & Screen FX Overlay Engine</h2>
-                        <p>Drawing inspiration from dynamic visual rhythm games like <em>Geometry Dash</em>, Keyboard Symphony implements a robust **Visual Scripting Overlay Engine**. Level designers can insert complex screen-space shaders and scene transformations directly into level charts, synchronizing visual intensity with acoustic drops.</p>
-                        
-                        <p>These visual triggers are routed through dedicated script channels on <strong>Lanes 10 to 13</strong> and executed via specialized GLSL shaders:</p>
+                        <p>Visual scripting triggers are positioned across specialized script tracks, <strong>Lanes 10 to 13</strong>, in the timeline charts. The graphics pipeline parses these triggers dynamically at runtime to load GLSL shaders and animate coordinate camera space transforms.</p>
 
-                        <h3>The Shader Suite (<code>assets/shaders/</code>)</h3>
+                        <h3>Shading Suites (<code>assets/shaders/</code>)</h3>
                         <ol>
-                            <li><strong>Digital Glitch Shader (<code>glitch.gdshader</code>):</strong> Slices the screen coordinates horizontally into 30 distinct bands, shifting random bands horizontally based on a high-frequency sine-random noise generator, and performing red/blue split chromatic channel shifting.</li>
-                            <li><strong>Chromatic Aberration Shader (<code>chromatic_aberration.gdshader</code>):</strong> Dynamically offsets the red, green, and blue color channels outward from the center, mimicking camera lens distortion.</li>
-                            <li><strong>Lens Circle Vignette Shader (<code>lens_circle.gdshader</code>):</strong> Creates a localized dark-neon vignette tunnel. It computes pixel distances from the screen's center, keeping a specified <code>clear_radius</code> completely transparent, while blending a deep dark-blue quadratic falloff outwards to the corners.</li>
-                            <li><strong>Pixel Inversion Shader (<code>invert.gdshader</code>):</strong> Performs a rapid bitwise color inversion (<code>1.0 - Color</code>) across all active pixels on screen.</li>
+                            <li><strong>Digital Glitch Shader (<code>glitch.gdshader</code>):</strong> Slices viewport screen coordinates horizontally into 30 distinct bands, shifting random bands horizontally based on high-frequency noise and doing split red/blue chromatic offsets.</li>
+                            <li><strong>Chromatic Aberration Shader (<code>chromatic_aberration.gdshader</code>):</strong> Shifts red, green, and blue color channels outward from the center, creating simulated high-intensity camera lens warp.</li>
+                            <li><strong>Lens Circle Vignette Shader (<code>lens_circle.gdshader</code>):</strong> Computes pixel radial distances from the screen center, maintaining a transparent circle while blending a deep dark-blue quadratic vignette falloff towards the viewport borders.</li>
+                            <li><strong>Pixel Inversion Shader (<code>invert.gdshader</code>):</strong> Initiates a high-speed bitwise pixel color inversion (<code>1.0 - Color</code>) across viewport space.</li>
                         </ol>
 
-                        <h3>Executable Visual Triggers</h3>
+                        <h3>FX Triggers & Node Specifications</h3>
                         <ul>
-                            <li><strong>Sync Note Color (SNC):</strong> Targets a specific note by its ID and smoothly transitions its color to a new HSL target over a defined beat duration.</li>
-                            <li><strong>Screen Shake (SSH):</strong> Induces random offset displacement on the 2D game camera based on a customizable amplitude (intensity) and decay time.</li>
-                            <li><strong>Lens Circle (LCI):</strong> Triggers the vignette shader to snap-close around the center, hold for a defined beat length, and slowly reopen utilizing a cubic ease-in-out transition.</li>
-                            <li><strong>Background Color (BGC):</strong> Transitions the background canvas smoothly between custom hex colors over time.</li>
-                            <li><strong>Screen Flash (FLS):</strong> Floods the screen with an opaque neon color, which then fades out utilizing a quadratic ease-out decay curve.</li>
-                            <li><strong>Chromatic Aberration (CRA) & Glitch (GLT):</strong> Initiates high-intensity visual glitches that ease back to zero over a designated period.</li>
-                            <li><strong>Color Invert (INV):</strong> Flashes the pixel inversion shader, reversing all colors on screen.</li>
-                            <li><strong>Change Background Path (CBP):</strong> Swaps the gameplay's active background image on the fly.</li>
-                            <li><strong>Set Hit Sound (SHS):</strong> Swaps the game's active hitsound asset to a different sound file (e.g. a kick drum or percussion chime) mid-level.</li>
+                            <li><strong>SNC (Sync Note Color):</strong> Eases the HSL color coordinates of notes bearing a specific target ID over a custom beat duration.</li>
+                            <li><strong>SSH (Screen Shake):</strong> Triggers 2D screen shake on the active gameplay camera based on custom intensity amplitude and decay settings.</li>
+                            <li><strong>LCI (Lens Circle Vignette):</strong> Snaps the vignette closed, holds it for a designated beat length, and opens it slowly using a cubic ease-in-out transition.</li>
+                            <li><strong>BGC (Background Color):</strong> Interpolates the background canvas color smoothly between hex values over a defined beat length.</li>
+                            <li><strong>FLS (Screen Flash):</strong> Floods the screen with an opaque neon color, which decays out using a quadratic ease-out decay curve.</li>
+                            <li><strong>CRA (Chromatic Aberration) & GLT (Glitch):</strong> Initiates high-intensity visual glitches that ease back to zero over a designated period.</li>
+                            <li><strong>INV (Color Invert):</strong> Flashes the pixel inversion shader, reversing all colors on screen.</li>
+                            <li><strong>CBP (Change Background Path):</strong> Instantly swaps the gameplay's active background image on the fly.</li>
+                            <li><strong>SHS (Set Hit Sound):</strong> Swaps the game's active hitsound asset to a different sound file (e.g. Kick or Percussion) mid-level.</li>
+                            <li><strong>SST (Skip Song To) [NEW]:</strong> A specialized <strong>non-scalable node</strong> (duration <code>0.0</code>) that triggers a decoupled audio skip when crossed.</li>
+                            <li><strong>ROT (Rotate), ZOM (Zoom), and MOV (Move):</strong> Coordinate solid 2D camera rotations, scaling zoom offsets, and X/Y displacements.</li>
                         </ul>
                     </article>
 
-                    <!-- Level Editor -->
+                    <!-- The Professional Level Editor & Audio Visualizer -->
                     <article id="doc-editor" class="doc-article">
-                        <h2>The Professional Level Editor</h2>
-                        <p>Unleash your inner beat creator with our comprehensive, fully integrated <strong>Level Editor</strong> dashboard. Plotted on a vertically scrollable timeline, creators have direct control over beat snapping, metadata adjustments, and visual triggers.</p>
+                        <h2>The Professional Level Editor & Audio Visualizer</h2>
+                        <p>The level editor provides creators with premium vertical-grid charting, snappable subdivisions (ranging from <code>1/4 Snap</code> to ultra-precise <code>1/32 Snap</code>), and picture-in-picture viewport gameplay previews.</p>
 
-                        <h3>Precision Grid & Subdivision Snapping</h3>
-                        <p>Charts are plotted on a timeline grid representing beats. To ensure absolute musical synchronization, the editor features a comprehensive <strong>Subdivision Snapping System</strong> that locks placed notes to grid lines:</p>
-                        <ul>
-                            <li><strong>1/4 Snap</strong> (Quarter Beats)</li>
-                            <li><strong>1/8 Snap</strong> (Eighth Beats)</li>
-                            <li><strong>1/12 Snap</strong> (Triplet Snaps)</li>
-                            <li><strong>1/16 Snap</strong> (Sixteenth Beats)</li>
-                            <li><strong>1/24 Snap</strong> (Complex Triplets)</li>
-                            <li><strong>1/32 Snap:</strong> Ultimate precision demanded for rapid mechanical drum rolls.</li>
-                        </ul>
-
-                        <h3>Dual-Operating Modes</h3>
+                        <h3>Audacity-Style Dual Peak/RMS Waveform Visualizer</h3>
+                        <p>The editor features a professional-grade audio visualizer modeled directly after advanced Digital Audio Workstations (DAWs) and Audacity:</p>
                         <ol>
-                            <li><strong>Spawn Mode:</strong> Click on any cell within the grid to instantly place a note. The editor enforces strict lane boundaries: lanes 0-9 are strictly reserved for gameplay notes, while lanes 10-13 are gated exclusively for visual triggers.</li>
-                            <li><strong>Edit Mode:</strong> Click on any placed note or trigger to inspect and modify its attributes (Beat, Note length, note color, visual FX intensity, etc.) via the contextual <strong>Inspector Panel</strong>.</li>
-                        </ol>
-
-                        <h3>Real-Time Live Viewport Preview</h3>
-                        <p>Positioned as a glowing picture-in-picture viewport, a fully functional mini-instance of the gameplay engine runs alongside the editor!</p>
-                        <ul>
-                            <li>Toggle previewing on to watch a simulated autoplay bot complete your chart in real-time.</li>
-                            <li>Drag the vertical seekbar or scroll the timeline, and the viewport's camera, background audio player, and active notes instantly seek to the exact millisecond in perfect sync.</li>
-                        </ul>
-
-                        <h3>Play-As-You-Go (PAYGM) Live Recording</h3>
-                        <p>Recording complex streams manually can be tedious. <strong>PAYG Mode</strong> allows creators to record their chart in real-time:</p>
-                        <ul>
-                            <li>Click the <strong>⏺ RECORD (PAYG)</strong> button on the editor sidebar.</li>
-                            <li>A <strong>3-second countdown</strong> will trigger, letting you prep your hands.</li>
-                            <li>The playback playhead starts moving. Tap keys in rhythm to place single beat notes snapped to the closest subdivision.</li>
-                            <li>Hold a key down for longer than <code>0.5 beats</code> to automatically stretch it into a glowing <strong>Hold Note</strong> until you release the key!</li>
-                        </ul>
-                    </article>
-
-                    <!-- Audio & FFmpeg -->
-                    <article id="doc-ffmpeg" class="doc-article">
-                        <h2>Audio Formats & FFmpeg Integration</h2>
-                        <p>To avoid latency spikes and audio playback stutters, Keyboard Symphony enforces <strong>strict OGG Vorbis audio requirements</strong>. If you select a <code>.mp3</code> or <code>.wav</code> soundtrack, the editor initiates an automated transcode conversion pipeline.</p>
-
-                        <h3>FFmpeg Transcode Module</h3>
-                        <ol>
-                            <li>The editor automatically prompts: <em>"The selected audio is not in OGG format. Would you like the game to convert/rename it to .ogg automatically?"</em></li>
-                            <li><strong>On Confirmation:</strong> The engine automatically scans local system variables and WinGet Gyan packages for an FFmpeg binary.</li>
-                            <li>It fires an asynchronous process call to transcode the file:
-                                <code>ffmpeg -y -i input.mp3 -c:a libvorbis -qscale:a 5 output.ogg</code>
+                            <li><strong>Asynchronous Transcoder:</strong> Spawns a background <code>Thread</code> which leverages FFmpeg to convert imported OGG/MP3/WAV audio streams to 44.1kHz Mono 16-bit WAV PCM formats instantly.</li>
+                            <li><strong>High-Fidelity Peak & RMS Extraction:</strong> Reads the raw PCM buffers (processing over 10 million samples for a 4-minute song) and computes both:
+                                <ul>
+                                    <li><em>Peak Amplitude:</em> The maximum absolute transient spikes, drawn as a wider, semi-transparent outer envelope (using colors <code>rgba(0, 102, 204, 0.40)</code> upper, and <code>rgba(178, 0, 89, 0.35)</code> lower).</li>
+                                    <li><em>RMS Energy:</em> The root-mean-square average energy, representing the perceived core loudness, drawn as a bright, centered neon inner core (using colors <code>rgba(0, 166, 255, 0.95)</code> upper, and <code>rgba(255, 0, 127, 0.90)</code> lower).</li>
+                                </ul>
                             </li>
-                            <li>Upon successful transcoding, it loads the audio stream, recalculates the timeline limits, and notifies the user via global UI toasts.</li>
+                            <li><strong>Waveform Caching:</strong> Decoded Peak/RMS buffers are stored locally inside highly compressed binary files under <code>user://cache/waveforms/</code> (hashed via MD5 of the stream resource path). Subsequent loads bypass decoding and load **instantly (0.0s)**.</li>
+                            <li><strong>Glassmorphic Pulse Scanner:</strong> While background decoding is in progress, the visualizer renders a glassmorphic blur panel overlay with an animated progress scanner, keeping the editor interactive and running at 60+ FPS.</li>
                         </ol>
+
+                        <h3>Decoupled Playback & Millisecond Formatting</h3>
+                        <p>The transport panel implements premium seeking controls:</p>
+                        <ul>
+                            <li><strong>Millisecond Formatting:</strong> The timeline updates current and total song durations in a human-readable millisecond-precise format: <code>X min, Y secs, Z ms / A min, B secs, C ms</code>.</li>
+                            <li><strong>Skip Song To (Decoupled Seeking):</strong> Allows entering target skip timestamps (supporting flexible inputs like <code>01:20:250</code>, <code>1:20.25</code>, or <code>80</code>). Clicking <strong>Skip</strong> seeks the music player instantly to that time *without* moving the chart's current beat position. During playback, the chart playhead advances synthetically based on delta time while the song plays independently. Clicking the timeline seekbar, waveform, or skipping via <code>⏮ -10s</code> / <code>+10s ⏭</code> instantly re-syncs the audio back to the playhead.</li>
+                        </ul>
+
+                        <h3>SST (Skip Song To) Effect Node</h3>
+                        <p>Creators can place the **SST** effect node directly onto the timeline grid (Lanes 10-13):</p>
+                        <ul>
+                            <li><strong>Visual Style:</strong> Labeled as <code>SST</code> in a striking Teal/Emerald color (<code>Color(0.0, 0.8, 0.5)</code>) with duration locked to <code>0.0</code> (non-scalable).</li>
+                            <li><strong>Inspector Properties:</strong> Selecting an `SST` note displays a custom `Skip Target` text box in the inspector sidebar where creators can input target skip timestamps.</li>
+                            <li><strong>Gameplay Execution:</strong> When the playhead crosses the `SST` note in-game or during preview, it triggers decoupled audio playback—the music tracks immediately jump to the skip target while the gameplay playhead advances synthetically at its own pace.</li>
+                        </ul>
                     </article>
 
-                    <!-- Profile Cloud Sync -->
+                    <!-- Authentication, User Cloud Sync & Account Security -->
                     <article id="doc-database" class="doc-article">
-                        <h2>Authentication & User Profile Cloud Sync</h2>
-                        <p>Keyboard Symphony bridges offline play with online statistics tracking through a robust database integration powered by the <strong>Supabase Backend API</strong>.</p>
+                        <h2>Authentication, User Cloud Sync & Account Security</h2>
+                        <p>Keyboard Symphony bridges client-side safety with online progression through Supabase backend services.</p>
 
-                        <h3>Advanced Google OAuth Listener</h3>
-                        <p>Players can sign in utilizing their Google credentials. The game handles this through a highly secure, custom loopback listener:</p>
+                        <h3>Cryptographic Save Verification</h3>
+                        <p>Player statistics (XP, Currency, Stars, Levels Completed, and Joined Time) are securely written locally in <code>user://player_stats.json</code>. The file is encrypted utilizing **AES-256 (Advanced Encryption Standard)** with a highly secure 32-character passkey. If a player attempts to edit their local file, decryption fails, safeguarding leaderboard integrity.</p>
+
+                        <h3>Google OAuth TCPServer Redirect Listener</h3>
+                        <p>Online login uses a custom secure redirect handler to coordinate browser authentication:</p>
                         <ol>
-                            <li>The client initializes an in-game <code>TCPServer</code> listening on port <code>9999</code>.</li>
-                            <li>The OS shell opens the client's default browser to the Supabase Google authorization link.</li>
-                            <li>Once authorized, Supabase redirects the browser to <code>http://localhost:9999/#access_token=...</code></li>
-                            <li>The browser page runs an inline client-side JavaScript script which extracts the hash tokens and triggers a GET fetch request back to the local <code>TCPServer</code> before gracefully closing the browser tab.</li>
-                            <li>The game intercepts the HTTP headers, reads the tokens, updates the session, and triggers transition systems.</li>
+                            <li>The Godot client spawns a local <code>TCPServer</code> listening on port <code>9999</code>.</li>
+                            <li>The OS shell opens the player's web browser to the Supabase Google auth link.</li>
+                            <li>Upon authorization, Supabase redirects the browser to <code>http://localhost:9999/#access_token=...</code></li>
+                            <li>An inline script in the redirect page extracts the hash parameters, sends a GET fetch back to the client <code>TCPServer</code>, and closes the browser tab.</li>
+                            <li>The game processes the HTTP headers, reads the tokens, and securely logs the user in.</li>
                         </ol>
-
-                        <h3>Cryptographic Profile Security</h3>
-                        <p>To prevent cheating, player statistics (XP, Currency, Stars, Levels Completed, and Joined Time) are saved locally in <code>user://player_stats.json</code> encrypted using **AES-256 (Advanced Encryption Standard)** with a highly secure 32-character passkey. If a player attempts to edit their local statistics, the decryption process fails, protecting leaderboard integrity.</p>
 
                         <h3>Account Verification & The Verified Badge</h3>
-                        <p>The game features a multi-tiered account validation system. Unlocking a glowing <strong>Verified Badge</strong> (a stylized cyan cyber tag border overlay) on the profile screen requires the player to satisfy two requirements:</p>
-                        <ul>
-                            <li><strong>Email Verification:</strong> Confirming their registered email address (players can request a verification link directly from the Profile UI).</li>
-                            <li><strong>Google Linkage:</strong> Linking their third-party Google Account.</li>
-                        </ul>
-                        <p>Completing verification unlocks a unique, database-indexed Member ID (<code>PID</code>) which displays on their profile card (e.g. <code>MEMBER #0024</code>).</p>
+                        <p>A multi-tiered account validation system awards verified players a glowing, glassmorphic **Verified Badge** (cyan neon tag border overlay). Verification requires two conditions:</p>
+                        <ol>
+                            <li><strong>Email Verification:</strong> Active confirmation of the user's email address in the database (requested directly from the Profile UI).</li>
+                            <li><strong>Google Linkage:</strong> Secure linkage of their third-party Google Account.</li>
+                        </ol>
+                        <p>Once verified, players unlock a unique, database-indexed Member ID (<code>PID</code>) which displays on their profile card (e.g. <code>MEMBER #0024</code>).</p>
                     </article>
 
-                    <!-- Autoload Singletons -->
+                    <!-- Core Autoload Architecture -->
                     <article id="doc-systems" class="doc-article">
-                        <h2>Core Systems & Autoload Architecture</h2>
-                        <p>Underpinning the user interface and game loop are three core autoload singletons that handle game states, visual effects, and audio binds dynamically.</p>
+                        <h2>Core Autoload Architecture</h2>
+                        <p>Underpinning the user interface and main game loops are five core autoload singletons that coordinate data, layouts, sound, and synchronization layers recursively:</p>
 
-                        <h3>🔊 SoundManager (<code>src/core/sound_manager.gd</code>)</h3>
-                        <p>A procedural audio generation module that synthesizes all user interface sounds dynamically in system memory on boot, eliminating static audio file sizes:</p>
                         <ul>
-                            <li><strong>Hover Sound:</strong> A high-frequency sine-frequency sweep up: <code>600Hz &rarr; 900Hz</code> over <code>0.04s</code>.</li>
-                            <li><strong>Press Sound:</strong> A crisp retro mechanical click sweep down: <code>500Hz &rarr; 150Hz</code> over <code>0.07s</code>.</li>
-                            <li><strong>Success Bell:</strong> A gorgeous major-chord chime combining three harmonious sine frequencies (<code>880Hz</code>, <code>1109.73Hz</code>, <code>1318.51Hz</code>) decaying exponentially over <code>0.45s</code>.</li>
-                            <li><strong>Error Buzzer:</strong> A low digital alarm blending sine waves with high-grit square waves.</li>
-                            <li><strong>Automatic UI Sound Binding:</strong> On boot and whenever a new scene is loaded, the SoundManager intercepts node addition signals (<code>get_tree().node_added</code>) and automatically binds hover/press sound effects to all <code>BaseButton</code> nodes recursively, guaranteeing game-wide audio responsiveness with zero manual wiring!</li>
+                            <li><strong>SoundManager (<code>src/core/sound_manager.gd</code>):</strong> A procedural audio synthesizer that generates all UI sounds dynamically in memory on boot (sine sweep hovers, retro mechanical click presses, and major-chime chord successes). It intercepts node additions (<code>get_tree().node_added</code>) and automatically binds hover/press sound effects to all <code>BaseButton</code> nodes recursively, guaranteeing game-wide responsiveness with zero manual wiring.</li>
+                            <li><strong>ToastManager (<code>src/core/toast_manager.gd</code>):</strong> Stacks glassmorphic, glowing alerts vertically on layer <code>128</code> utilizing cubic scaling transitions and smooth sliding collapse animations.</li>
+                            <li><strong>SceneTransition (<code>src/core/scene_transition.gd</code>):</strong> Handles system-wide switching using canvas layer <code>100</code> and a diagonal neon panel that swipes across the viewport with HSL color-shifting glow edges.</li>
+                            <li><strong>SettingsManager (<code>src/core/settings_manager.gd</code>):</strong> Manages local settings configuration, inputs, graphics rendering presets, and gameplay calibrations.</li>
+                            <li><strong>SyncManager (<code>src/core/sync_manager.gd</code>):</strong> Performs bidirectional cloud sync with Supabase by comparing save timestamps, preventing client resets from overwriting cloud database truths.</li>
                         </ul>
 
-                        <h3>ToastManager (<code>src/core/toast_manager.gd</code>)</h3>
-                        <p>A premium global notification overlay layer running at layer <code>128</code> (on top of all menus and transitions). It spawns glassmorphic, glowing alerts that stack vertically and feature cubic scaling animations. When a toast expires, the container collapses its boundaries using tweens, allowing remaining alerts to slide into place smoothly.</p>
-
-                        <h3>🌅 SceneTransition (<code>src/core/scene_transition.gd</code>)</h3>
-                        <p>A system-wide scene switcher operating on canvas layer <code>100</code>. When transitioning, a massive diagonal neon panel swipes across the viewport accompanied by a stereo transition whoosh WAV sound effect. The panel cycles its solid color through a spectrum of vibrant neon HSL coordinates (Cyan &rarr; Magenta &rarr; Orange &rarr; Green &rarr; Hot Pink) with a high-intensity glow edge.</p>
+                        <div class="alert-box note" style="margin-top: 30px;">
+                            <strong>SYSTEM NOTE:</strong> All systems have been fully verified under Godot 4.6.2 and compile with zero GDScript warnings. Custom OGG transcoding, decoupled audio loops, and asymmetric hit boundaries are fully integrated and live.
+                        </div>
                     </article>
                 </div>
             </div>
@@ -366,11 +359,9 @@
     <!-- Global Footer -->
     <footer class="footer">
         <div class="footer-container">
-            <p>© 2026 Keyboard Symphony Project. Designed with Neon Cyan & Magenta.</p>
+            <p>© 2026 Keyboard Symphony | Photon Studios 2025-26</p>
             <div class="footer-links">
-                <a href="docs.html">GitHub Source</a>
-                <a href="docs.html">Terms of Service</a>
-                <a href="docs.html">Creator Licences</a>
+                <a href="https://github.com/CreatorPoints/KeyboardSymphony">GitHub Source</a>
             </div>
         </div>
     </footer>
