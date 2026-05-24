@@ -10,22 +10,20 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <!-- Mermaid.js for beautiful professional flowcharts -->
-    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            mermaid.initialize({
-                startOnLoad: true,
-                theme: 'dark',
-                themeVariables: {
-                    primaryColor: '#00f0ff',
-                    primaryTextColor: '#fff',
-                    lineColor: '#ff007f',
-                    textColor: '#fff',
-                    mainBkg: '#06060c',
-                    nodeBorder: '#00f0ff'
-                }
-            });
+    <!-- Mermaid.js for beautiful professional flowcharts loaded via modern ESM -->
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'dark',
+            themeVariables: {
+                primaryColor: '#00f0ff',
+                primaryTextColor: '#fff',
+                lineColor: '#ff007f',
+                textColor: '#fff',
+                mainBkg: '#06060c',
+                nodeBorder: '#00f0ff'
+            }
         });
     </script>
 </head>
