@@ -91,10 +91,16 @@
                 <a href="community.html" class="nav-link" id="nav-community">COMMUNITY</a>
                 <a href="download.html" class="nav-link" id="nav-download">DOWNLOAD</a>
                 <a href="docs.html" class="nav-link active" id="nav-docs">DOCS</a>
+                <a href="profile.html" class="nav-link" id="nav-profile">PROFILE</a>
             </nav>
 
             <div class="nav-actions">
                 <a href="download.html" class="btn-primary glow-cyan">PLAY NOW</a>
+                <a href="profile.html" class="nav-profile-circle-link" id="nav-profile-circle-link" title="Player Profile">
+                    <div class="nav-profile-circle">
+                        <img id="nav-profile-avatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=Guest" alt="Profile">
+                    </div>
+                </a>
                 <button class="mobile-menu-toggle" id="menu-toggle">
                     <span></span>
                     <span></span>
@@ -277,6 +283,9 @@ flowchart TD
                         <ul>
                             <li><strong>Pure Perfect:</strong> Displays a vibrant green flare on the receptor line and records a perfect accuracy mark on the accuracy indicator.</li>
                             <li><strong>Instant Late Miss (Auto-Miss):</strong> Any note passing the active receptor line by more than <code>+45ms</code> is instantly wiped from play memory and registered as a <strong>Miss</strong>. The note is colored dark gray (<code>Color(0.4, 0.4, 0.4, 0.35)</code>) to provide immediate, snappy sensory response.</li>
+                            <li><strong>Dynamic Key BG Tinting:</strong> Octagonal lane key backgrounds (<code>KeyBG</code>) dynamically adapt and tint to match their respective lane note colors.</li>
+                            <li><strong>Event-Driven Glow Caching:</strong> Key highlights utilize high-performance event-driven cached states (<code>_lane_last_glow_state</code>) to eliminate redundant per-frame draw operations.</li>
+                            <li><strong>Sleek Hold Notes:</strong> Elongated hold note trail bodies are rendered with a highly customized slim profile, scaled down to <code>45%</code> thickness (<code>width * 0.45</code>) compared to regular tap notes in both the editor and live gameplay grids for a premium aesthetic.</li>
                         </ul>
                     </article>
 
@@ -312,7 +321,10 @@ flowchart TD
                     <!-- The Professional Level Editor & Audio Visualizer -->
                     <article id="doc-editor" class="doc-article">
                         <h2>The Professional Level Editor & Audio Visualizer</h2>
-                        <p>The level editor provides creators with premium vertical-grid charting, snappable subdivisions (ranging from <code>1/4 Snap</code> to ultra-precise <code>1/32 Snap</code>), and picture-in-picture viewport gameplay previews.</p>
+                        <p>The level editor provides creators with premium vertical-grid charting, snappable subdivisions (ranging from <code>1/4 Snap</code> to ultra-precise <code>1/32 Snap</code>), and a decoupled <strong>"Run Level" Playtest Launcher</strong> system.</p>
+
+                        <h3>Decoupled Playtest Workflow & 60 FPS Guarantee</h3>
+                        <p>To avoid massive CPU/GPU simulation and rendering lag inherent to embedding live gameplay loops inside the editor viewport, the live editor panel relies on a dedicated round-trip playtest launcher. Launching the playtest spawns a decoupled standalone Godot sub-process, enabling 60+ FPS high-fidelity testing on the fly, and automatically returning the creator to their exact chart edit state upon exit.</p>
 
                         <h3>Audacity-Style Dual Peak/RMS Waveform Visualizer</h3>
                         <p>The editor features a professional-grade audio visualizer modeled directly after advanced Digital Audio Workstations (DAWs) and Audacity:</p>
@@ -374,7 +386,7 @@ flowchart TD
                     <!-- Core Autoload Architecture -->
                     <article id="doc-systems" class="doc-article">
                         <h2>Core Autoload Architecture</h2>
-                        <p>Underpinning the user interface and main game loops are five core autoload singletons that coordinate data, layouts, sound, and synchronization layers recursively:</p>
+                        <p>Underpinning the user interface and main game loops are six core autoload singletons that coordinate data, layouts, sound, performance diagnostics, and synchronization layers recursively:</p>
 
                         <ul>
                             <li><strong>SoundManager (<code>src/core/sound_manager.gd</code>):</strong> A procedural audio synthesizer that generates all UI sounds dynamically in memory on boot (sine sweep hovers, retro mechanical click presses, and major-chime chord successes). It intercepts node additions (<code>get_tree().node_added</code>) and automatically binds hover/press sound effects to all <code>BaseButton</code> nodes recursively, guaranteeing game-wide responsiveness with zero manual wiring.</li>
@@ -382,6 +394,7 @@ flowchart TD
                             <li><strong>SceneTransition (<code>src/core/scene_transition.gd</code>):</strong> Handles system-wide switching using canvas layer <code>100</code> and a diagonal neon panel that swipes across the viewport with HSL color-shifting glow edges.</li>
                             <li><strong>SettingsManager (<code>src/core/settings_manager.gd</code>):</strong> Manages local settings configuration, inputs, graphics rendering presets, and gameplay calibrations.</li>
                             <li><strong>SyncManager (<code>src/core/sync_manager.gd</code>):</strong> Performs bidirectional cloud sync with Supabase by comparing save timestamps, preventing client resets from overwriting cloud database truths.</li>
+                            <li><strong>PerformanceProfiler (<code>src/core/performance_profiler.gd</code>):</strong> Orchestrates continuous tracing logs and visual performance auditing. To maintain absolute gaming stability, the profiler is gracefully decoupled at runtime startup—automatically running dormant with <code>0%</code> CPU/GPU overhead unless intentionally triggered via development keystrokes (Ctrl+P), protecting runtime frames.</li>
                         </ul>
 
                         <div class="alert-box note" style="margin-top: 30px;">

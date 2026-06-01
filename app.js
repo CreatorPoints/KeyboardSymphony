@@ -17,6 +17,24 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ---------------------------------------------------------
+    // 1.0 GLOBAL PROFILE AVATAR NAVIGATION LOADER
+    // ---------------------------------------------------------
+    const navAvatar = document.getElementById("nav-profile-avatar");
+    if (navAvatar) {
+        const cachedAvatar = localStorage.getItem("user_avatar_cached");
+        const cachedFallback = localStorage.getItem("user_fallback_avatar_cached");
+        if (cachedAvatar) {
+            navAvatar.src = cachedAvatar;
+            navAvatar.onerror = () => {
+                navAvatar.src = cachedFallback || "https://api.dicebear.com/7.x/bottts/svg?seed=Guest";
+            };
+        } else {
+            // Default cyber-silhouette if signed out
+            navAvatar.src = "https://api.dicebear.com/7.x/bottts/svg?seed=Guest";
+        }
+    }
+
+    // ---------------------------------------------------------
     // 1.1 GLOBAL SCENE TRANSITION SYSTEM (Godot-style)
     // ---------------------------------------------------------
     const overlay = document.querySelector(".scene-transition-overlay");
