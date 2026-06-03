@@ -2243,3 +2243,59 @@ body {
     transform: scale(1.05);
 }
 
+/* Google Auth Button & Divider */
+.auth-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 20px 0;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.auth-divider:not(:empty)::before {
+    margin-right: 15px;
+}
+
+.auth-divider:not(:empty)::after {
+    margin-left: 15px;
+}
+
+.btn-google {
+    background: rgba(255, 255, 255, 0.02) !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.08) !important;
+    color: #ffffff !important;
+}
+
+.btn-google::before {
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+.btn-google:hover::before {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1) !important;
+}
+
+.btn-google:hover {
+    color: #ffffff !important;
+    transform: translateY(-2px);
+}
+
+.google-icon {
+    display: inline-block;
+    vertical-align: middle;
+}
+
